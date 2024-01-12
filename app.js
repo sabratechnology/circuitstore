@@ -12,9 +12,9 @@ const featuredPageRoutes = require('./routes/featuredRoutes');
 const latestPageRoutes = require('./routes/latestRoutes');
 const bestSellingPageRoutes = require('./routes/bestSellingRoutes');
 const allProductPageRoutes = require('./routes/allProductsRoutes');
-const productPageRoutes = require('./routes/ProductRoutes');
-const userPageRoutes = require('./routes/UsersRoutes');
-
+const productPageRoutes = require('./routes/productsRoutes');
+const userPageRoutes = require('./routes/usersRoutes');
+const orderPageRoutes = require('./routes/ordersRoutes');
 
 
 
@@ -25,6 +25,7 @@ app.use('/api/best', bestSellingPageRoutes);
 app.use('/api/all_products', allProductPageRoutes);
 app.use('/api/products', productPageRoutes);
 app.use('/api/users', userPageRoutes);
+app.use('/api/orders', orderPageRoutes);
 
 
 

@@ -101,7 +101,23 @@ class Users {
         });
       }
 
+      static async userProfileDataById(req) {
+        const userId = req.user_id;
+        return new Promise((resolve, reject) => {
+          const query = "SELECT op_user_id,user_name,email,contact_no,fk_address_id,profile_photo,added_on,status,notifn_topic,login_time_date,active_inactive FROM `op_user` WHERE op_user_id = ? AND status ='1';";
+            db.query(query,[userId], (error, results) => {
+            if (error) {
+              reject(error);
+            } else {
+              resolve(results);
+            }
+          });
+        });
+      }
 
+
+
+      
 }
 
 // Exporting the Section class

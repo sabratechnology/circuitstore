@@ -41,3 +41,18 @@ exports.userCartDataById = [
         res.status(500).json({ status: 500, code: false, message: 'failure',error: error.message });
       }
     }];
+
+    exports.userProfileDataByUserId = [
+      check('fk_lang_id').exists().isInt(),
+      check('user_id').exists().isInt(),
+      validate,
+      async (req, res) => {
+        try {
+          const fData = await Users.userProfileDataById(req.body);  
+          res.status(200).json({status: 200, code: true, message: 'success', user_profile: fData });
+        } catch (error) {
+          console.error('Error:', error);
+          res.status(500).json({ status: 500, code: false, message: 'failure',error: error.message });
+        }
+      }];
+    
