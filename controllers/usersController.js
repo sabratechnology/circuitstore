@@ -1,5 +1,5 @@
 const { check, validationResult: expressValidationResult } = require('express-validator');
-const Product = require('../models/Product');
+const Users = require('../models/Users');
 
 
 // Validation middleware
@@ -13,13 +13,13 @@ const validate = (req, res, next) => {
 
 
 // Controller
-exports.productDataById = [
+exports.userCartDataById = [
   check('fk_lang_id').exists().isInt(),
-  check('product_id').exists().isInt(),
+  check('user_id').exists().isInt(),
   validate,
   async (req, res) => {
     try {
-      const fData = await Product.productDataById(req.body);  
+      const fData = await Users.userCartDataByUserId(req.body);  
       res.status(200).json({status: 200, code: true, message: 'success', data: fData });
     } catch (error) {
       console.error('Error:', error);
@@ -28,20 +28,16 @@ exports.productDataById = [
   }];
 
 
-
-  exports.productDataByCatId = [
+  exports.userAllAddressDataByUserId = [
     check('fk_lang_id').exists().isInt(),
-    check('category_id').exists().isInt(),
-    check('page').exists().isInt(),
+    check('user_id').exists().isInt(),
     validate,
     async (req, res) => {
-    try {
-      const fData = await Product.productDataBtCategId(req.body);  
-      res.status(200).json({status: 200, code: true, message: 'success', data: fData });
-    } catch (error) {
-      console.error('Error:', error);
-      res.status(500).json({ status: 500, code: false, message: 'failure',error: error.message });
-    }
-  }];
-  
-
+      try {
+        const fData = await Users.userAddressDataById(req.body);  
+        res.status(200).json({status: 200, code: true, message: 'success', data: fData });
+      } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ status: 500, code: false, message: 'failure',error: error.message });
+      }
+    }];

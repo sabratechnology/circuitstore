@@ -24,8 +24,6 @@ class Product {
   static async getProductDetailsById(req) {
     const userId = req.user_id;
     const productId = req.product_id;
-
-
     return new Promise((resolve, reject) => {
           const query = `SELECT
               product.*,
@@ -147,21 +145,23 @@ class Product {
   }
 
 
-  static productData1(req) {
+  static productDataBtCategId(req) {
     return new Promise(async (resolve, reject) => {
       try {
         // Extracting page and limit from the request or using defaults
         const page = req.page || 1;
         const limit = 15;
-
+        
         // Fetching featured products and total count asynchronously
-        const [latestProducts, totalLatestProducts] = await Promise.all([
-          this.getLatestProducts(req, page, limit),
-          this.totalLatestProductsCount(req),
+        const [categoryProductsData, totalCategoryProductsData] = await Promise.all([
+          this.getCategoryProducts(req, page, limit),
+          this.totalCategoryProductsCount(req),
         ]);
 
+        //console.log(categoryProductsData);
+
         // Calculating total pages
-        const totalPages = Math.ceil(totalLatestProducts / limit);
+        const totalPages = Math.ceil(totalCategoryProductsData / limit);
 
         // Validating the requested page
         if (page > totalPages || page < 1) {
@@ -171,14 +171,14 @@ class Product {
 
         // Constructing the response object
         const response = {
-          latestProducts,
-          totalLatestProducts,
+          categoryProductsData,
+          totalCategoryProductsData,
           currentPage: page,
           totalPages,
         };
 
         // Adding a message if there are no records for the requested page
-        if (latestProducts.length === 0) {
+        if (categoryProductsData.length === 0) {
           response.message = 'No records available for the requested page.';
         }
 
@@ -190,6 +190,55 @@ class Product {
       }
     });
   }
+
+
+  static async getCategoryProducts(req, page, limit) {
+    const userId = req.user_id;
+    const categoryId = req.category_id;
+    const offset = (page - 1) * limit;
+
+    return new Promise((resolve, reject) => {
+      const query = `
+        SELECT 
+          pr.product_id, 
+          pr.product_name, 
+          pr.product_name_ar, 
+          pr.max_sell_limit, 
+          pr.image_name, 
+          pr.product_offer_price, 
+          pr.new_arrival, 
+          inventory.qty AS quantity, 
+          CASE WHEN wishlist.product_id IS NOT NULL THEN true ELSE false END AS in_wishlist, 
+          CASE WHEN cart.product_id IS NOT NULL THEN true ELSE false END AS in_cart 
+        FROM 
+          product pr 
+          LEFT JOIN inventory ON inventory.product_id = pr.product_id 
+          LEFT JOIN wishlist ON wishlist.product_id = pr.product_id AND wishlist.user_id = ? 
+          LEFT JOIN cart ON cart.product_id = pr.product_id AND cart.user_id = ? 
+        WHERE 
+          pr.category_id = ?
+          AND pr.status = '1' 
+          AND pr.product_status = '1' 
+          AND inventory.used_status = '1' 
+        ORDER BY 
+          pr.product_id DESC 
+        LIMIT ?, ?;`;
+
+      // Executing the query with parameters
+
+      db.query(query, [userId,userId,categoryId,offset, limit], (error, results) => {
+
+        if (error) {
+          // Rejecting with the encountered error
+          reject(error);
+        } else {
+          // Resolving with the query results
+          resolve(results);
+        }
+      });
+    });
+  }
+
 
   static async getLatestProducts(req, page, limit) {
     const userId = req.user_id;
@@ -260,6 +309,37 @@ class Product {
       });
     });
   }
+
+
+  
+
+  static async totalCategoryProductsCount(req) {
+
+    const category_id = req.category_id;
+    return new Promise((resolve, reject) => {
+      const countQuery = `
+        SELECT COUNT(*) AS total_count
+        FROM product pr
+        LEFT JOIN inventory ON inventory.product_id = pr.product_id
+        WHERE pr.category_id = ?
+          AND pr.status = '1'
+          AND pr.product_status = '1'
+          AND inventory.used_status = '1';`;
+
+      // Executing the count query
+      db.query(countQuery, [category_id], (error, results) => {
+        if (error) {
+          // Rejecting with the encountered error
+          reject(error);
+        } else {
+          // Resolving with the total count
+          resolve(results[0].total_count);
+        }
+      });
+    });
+  }
+
+
 }
 
 // Exporting the Section class

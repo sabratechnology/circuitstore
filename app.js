@@ -13,6 +13,8 @@ const latestPageRoutes = require('./routes/latestRoutes');
 const bestSellingPageRoutes = require('./routes/bestSellingRoutes');
 const allProductPageRoutes = require('./routes/allProductsRoutes');
 const productPageRoutes = require('./routes/ProductRoutes');
+const userPageRoutes = require('./routes/UsersRoutes');
+
 
 
 
@@ -22,6 +24,8 @@ app.use('/api/latest', latestPageRoutes);
 app.use('/api/best', bestSellingPageRoutes);
 app.use('/api/all_products', allProductPageRoutes);
 app.use('/api/products', productPageRoutes);
+app.use('/api/users', userPageRoutes);
+
 
 
 

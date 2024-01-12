@@ -22,6 +22,20 @@ class Home {
     });
   }
 
+
+
+  static userAddressDataById(req) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const addressData = await this.getUserAddress(req);
+        const combinedData = {addressData};
+        resolve(combinedData);
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
+
   static async getSliders() {
     return new Promise((resolve, reject) => {
       // Perform the database query for brands
@@ -93,7 +107,6 @@ class Home {
 
   static async getuserCartCount(req) {
     const userId = req.user_id;
-
     return new Promise((resolve, reject) => {
       const query = "SELECT SUM(cart.qty) as cart_count FROM `cart` WHERE user_id = ?";
       db.query(query,[userId], (error, results) => {
@@ -108,7 +121,6 @@ class Home {
 
   static async getwishlistCount(req) {
     const userId = req.user_id;
-
     return new Promise((resolve, reject) => {
       const query = "SELECT count(wishlist.user_id) as wishlist_count FROM `wishlist` WHERE user_id = ?";
       db.query(query,[userId], (error, results) => {
