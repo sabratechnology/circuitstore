@@ -16,7 +16,6 @@ const validate = (req, res, next) => {
 exports.productDataById = [
   check('fk_lang_id').exists().isInt(),
   check('product_id').exists().isInt(),
-  check('user_id').isInt(),
   validate,
   async (req, res) => {
     try {
