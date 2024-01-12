@@ -4,47 +4,147 @@ class Product {
   static productDataById(req) {
     return new Promise(async (resolve, reject) => {
       try {
-        // Extracting page and limit from the request or using defaults
-        const page = req.page || 1;
-        const limit = 15;
-
-        // Fetching featured products and total count asynchronously
-        const [latestProducts, totalLatestProducts] = await Promise.all([
-          this.getLatestProducts(req, page, limit),
-          this.totalLatestProductsCount(req),
+        const [product_data,cart_counts,wishlist_counts,related_products] = await Promise.all([
+          this.getProductDetailsById(req),
+          this.getuserCartCount(req),
+          this.getwishlistCount(req),
+          this.getRelativeProductsByProductId(req)
+          
         ]);
-
-        // Calculating total pages
-        const totalPages = Math.ceil(totalLatestProducts / limit);
-
-        // Validating the requested page
-        if (page > totalPages || page < 1) {
-          resolve({ message: 'Invalid page number or no records available for the requested page.' });
-          return;
-        }
-
-        // Constructing the response object
-        const response = {
-          latestProducts,
-          totalLatestProducts,
-          currentPage: page,
-          totalPages,
-        };
-
-        if (latestProducts.length === 0) {
-          response.message = 'No records available for the requested page.';
-        }
-
-        // Resolving with the final response
+        const cart_count =cart_counts &&cart_counts[0] &&cart_counts[0].cart_count !== null ?cart_counts[0].cart_count: 0;
+        const wishlist_count = wishlist_counts && wishlist_counts[0] && wishlist_counts[0].wishlist_count !== null ? wishlist_counts[0].wishlist_count : 0;
+        const response = {product_data,related_products,cart_count,wishlist_count};
         resolve(response);
       } catch (error) {
-        // Rejecting with the encountered error
         reject(error);
       }
     });
   }
 
+  static async getProductDetailsById(req) {
+    const userId = req.user_id;
+    const productId = req.product_id;
 
+
+    return new Promise((resolve, reject) => {
+          const query = `SELECT
+              product.*,
+              inventory.qty as quantity,
+              category.category_name,
+              category.category_name_ar,
+              subcategory.sub_category_name,
+              subcategory.sub_category_name_ar,
+              childcategory.child_category_name,
+              childcategory.child_category_name_ar,
+              GROUP_CONCAT(product_gallery.img_url) as img_url,
+              CASE WHEN wishlist.product_id IS NOT NULL THEN true ELSE false END AS in_wishlist, 
+              CASE WHEN cart.product_id IS NOT NULL THEN true ELSE false END AS in_cart 
+          FROM
+              product
+          LEFT JOIN
+              product_gallery ON product_gallery.product_id = ?
+          LEFT JOIN 
+              wishlist ON wishlist.product_id = product.product_id AND wishlist.user_id = ? 
+          LEFT JOIN
+              cart ON cart.product_id = product.product_id AND cart.user_id = ? 
+          LEFT JOIN
+              category ON product.category_id = category.category_id
+          LEFT JOIN
+              subcategory ON product.sub_category_id = subcategory.sub_category_id
+          LEFT JOIN
+              childcategory ON childcategory.child_category_id = product.child_category_id
+          LEFT JOIN
+              inventory ON inventory.product_id = ?
+          WHERE
+              product.product_id = ?
+              AND product.status = 1
+              AND inventory.used_status = 1
+          GROUP BY
+              product_gallery.product_id;`;
+
+      // Executing the query with parameters
+      db.query(query, [productId,userId,userId,productId,productId], (error, results) => {
+        if (error) {
+          // Rejecting with the encountered error
+          reject(error);
+        } else {
+          // Resolving with the query results
+          resolve(results);
+        }
+      });
+    });
+  }
+
+
+  static async getuserCartCount(req) {
+    const userId = req.user_id;
+    return new Promise((resolve, reject) => {
+      const query = "SELECT SUM(cart.qty) as cart_count FROM `cart` WHERE user_id = ?";
+      db.query(query,[userId], (error, results) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(results);
+        }
+      });
+    });
+  }
+
+  static async getwishlistCount(req) {
+    const userId = req.user_id;
+    return new Promise((resolve, reject) => {
+      const query = "SELECT count(wishlist.user_id) as wishlist_count FROM `wishlist` WHERE user_id = ?";
+      db.query(query,[userId], (error, results) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(results);
+        }
+      });
+    });
+  }
+
+
+  static async getRelativeProductsByProductId(req) {
+    const product_id = req.product_id;
+    return new Promise((resolve, reject) => {
+      const query = `
+      SELECT
+          product_relative.rel_product_id,
+          product.*,
+          category.category_name,
+          subcategory.sub_category_name,
+          childcategory.child_category_name,
+          inventory.qty AS quantity
+      FROM
+          product
+      LEFT JOIN
+          product_relative ON product_relative.rel_product_id = ?
+      LEFT JOIN
+          category ON product.category_id = category.category_id
+      LEFT JOIN
+          subcategory ON product.sub_category_id = subcategory.sub_category_id
+      LEFT JOIN
+          childcategory ON childcategory.child_category_id = product.child_category_id
+      LEFT JOIN
+          inventory ON inventory.product_id = ?
+      WHERE
+          product_relative.product_id = ?
+          AND product.status = 1
+          AND product.product_status = 1
+          AND inventory.used_status = 1;
+    `;
+    
+    
+      db.query(query,[product_id,product_id,product_id], (error, results) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(results);
+        }
+      });
+    });
+  }
 
 
   static productData1(req) {
@@ -90,7 +190,6 @@ class Product {
       }
     });
   }
-
 
   static async getLatestProducts(req, page, limit) {
     const userId = req.user_id;
