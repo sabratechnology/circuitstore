@@ -145,7 +145,7 @@ class Product {
   }
 
 
-  static productDataBtCategId(req) {
+  static productDataByCategId(req) {
     return new Promise(async (resolve, reject) => {
       try {
         // Extracting page and limit from the request or using defaults
@@ -240,6 +240,54 @@ class Product {
   }
 
 
+  static async getProductsByBrandId(req, page, limit) {
+    const userId = req.user_id;
+    const brandId = req.brand_id;
+    const offset = (page - 1) * limit;
+
+    return new Promise((resolve, reject) => {
+      const query = `
+        SELECT 
+          pr.product_id, 
+          pr.product_name, 
+          pr.product_name_ar, 
+          pr.max_sell_limit, 
+          pr.image_name, 
+          pr.product_offer_price, 
+          pr.new_arrival, 
+          inventory.qty AS quantity, 
+          CASE WHEN wishlist.product_id IS NOT NULL THEN true ELSE false END AS in_wishlist, 
+          CASE WHEN cart.product_id IS NOT NULL THEN true ELSE false END AS in_cart 
+        FROM 
+          product pr 
+          LEFT JOIN inventory ON inventory.product_id = pr.product_id 
+          LEFT JOIN wishlist ON wishlist.product_id = pr.product_id AND wishlist.user_id = ? 
+          LEFT JOIN cart ON cart.product_id = pr.product_id AND cart.user_id = ? 
+        WHERE 
+          pr.brand_id = ?
+          AND pr.status = '1' 
+          AND pr.product_status = '1' 
+          AND inventory.used_status = '1' 
+        ORDER BY 
+          pr.product_id DESC 
+        LIMIT ?, ?;`;
+
+      // Executing the query with parameters
+
+      db.query(query, [userId,userId,brandId,offset, limit], (error, results) => {
+
+        if (error) {
+          // Rejecting with the encountered error
+          reject(error);
+        } else {
+          // Resolving with the query results
+          resolve(results);
+        }
+      });
+    });
+  }
+
+
   static async getLatestProducts(req, page, limit) {
     const userId = req.user_id;
     const offset = (page - 1) * limit;
@@ -311,6 +359,43 @@ class Product {
   }
 
 
+
+  static async searchBarData(req) {
+    const userId = req.user_id;
+
+    return new Promise((resolve, reject) => {
+        const countQuery = `
+            SELECT
+                product.product_id,
+                product.product_name,
+                product.product_offer_price,
+                product.image_name,
+                product.product_name_ar,
+                product.search_unique_id
+            FROM
+                product
+            WHERE
+                product.status = 1
+                AND product.product_status = 1
+            ORDER BY
+                product.product_id DESC;
+        `;
+
+        // Executing the count query
+        db.query(countQuery, (error, results) => {
+            if (error) {
+                // Rejecting with the encountered error
+                reject(error);
+            } else {
+                // Resolving with the total count
+                resolve(results);
+            }
+        });
+    });
+}
+
+
+
   
 
   static async totalCategoryProductsCount(req) {
@@ -339,6 +424,77 @@ class Product {
     });
   }
 
+
+  static async totalBrandProductsCount(req) {
+
+    const brandId = req.brand_id;
+    return new Promise((resolve, reject) => {
+      const countQuery = `
+        SELECT COUNT(*) AS total_count
+        FROM product pr
+        LEFT JOIN inventory ON inventory.product_id = pr.product_id
+        WHERE pr.brand_id = ?
+          AND pr.status = '1'
+          AND pr.product_status = '1'
+          AND inventory.used_status = '1';`;
+
+      // Executing the count query
+      db.query(countQuery, [brandId], (error, results) => {
+        if (error) {
+          // Rejecting with the encountered error
+          reject(error);
+        } else {
+          // Resolving with the total count
+          resolve(results[0].total_count);
+        }
+      });
+    });
+  }
+
+  static productInfoByBrandId(req) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        // Extracting page and limit from the request or using defaults
+        const page = req.page || 1;
+        const limit = 15;
+        
+        // Fetching brand products and total count asynchronously
+        const [brandProductsData, totalBrandProductsData] = await Promise.all([
+          this.getProductsByBrandId(req, page, limit),
+          this.totalBrandProductsCount(req),
+        ]);
+
+
+        // Calculating total pages
+        const totalPages = Math.ceil(totalBrandProductsData / limit);
+
+        // Validating the requested page
+        if (page > totalPages || page < 1) {
+          resolve({ message: 'Invalid page number or no records available for the requested page.' });
+          return;
+        }
+
+        // Constructing the response object
+        const response = {
+          brandProductsData,
+          totalBrandProductsData,
+          currentPage: page,
+          totalPages,
+        };
+
+        // Adding a message if there are no records for the requested page
+        if (brandProductsData.length === 0) {
+          response.message = 'No records available for the requested page.';
+        }
+
+        // Resolving with the final response
+        resolve(response);
+      } catch (error) {
+        // Rejecting with the encountered error
+        reject(error);
+      }
+    });
+  }
 
 }
 

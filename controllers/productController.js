@@ -36,7 +36,7 @@ exports.productDataById = [
     validate,
     async (req, res) => {
     try {
-      const fData = await Product.productDataBtCategId(req.body);  
+      const fData = await Product.productDataByCategId(req.body);  
       res.status(200).json({status: 200, code: true, message: 'success', data: fData });
     } catch (error) {
       console.error('Error:', error);
@@ -44,4 +44,36 @@ exports.productDataById = [
     }
   }];
   
+
+
+
+  exports.productDataForSearchBar = [
+    check('fk_lang_id').exists().isInt(),
+    validate,
+    async (req, res) => {
+    try {
+      const fData = await Product.searchBarData(req.body);  
+      res.status(200).json({status: 200, code: true, message: 'success', product_data: fData });
+    } catch (error) {
+      console.error('Error:', error);
+      res.status(500).json({ status: 500, code: false, message: 'failure',error: error.message });
+    }
+  }];
+  
+
+
+  exports.productDataByBrandId = [
+    check('fk_lang_id').exists().isInt(),
+    check('brand_id').exists().isInt(),
+    check('page').exists().isInt(),
+    validate,
+    async (req, res) => {
+    try {
+      const fData = await Product.productInfoByBrandId(req.body);  
+      res.status(200).json({status: 200, code: true, message: 'success', data: fData });
+    } catch (error) {
+      console.error('Error:', error);
+      res.status(500).json({ status: 500, code: false, message: 'failure',error: error.message });
+    }
+  }];
 

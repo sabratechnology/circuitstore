@@ -1,5 +1,7 @@
 const { check, validationResult: expressValidationResult } = require('express-validator');
 const Users = require('../models/Users');
+const Home = require('../models/Home');
+
 
 
 // Validation middleware
@@ -20,7 +22,8 @@ exports.userCartDataById = [
   async (req, res) => {
     try {
       const fData = await Users.userCartDataByUserId(req.body);  
-      res.status(200).json({status: 200, code: true, message: 'success', data: fData });
+      
+      res.status(200).json({status: 200, code: true, message: 'success', data: fData});
     } catch (error) {
       console.error('Error:', error);
       res.status(500).json({ status: 500, code: false, message: 'failure',error: error.message });
@@ -49,10 +52,32 @@ exports.userCartDataById = [
       async (req, res) => {
         try {
           const fData = await Users.userProfileDataById(req.body);  
-          res.status(200).json({status: 200, code: true, message: 'success', user_profile: fData });
+          const cartCount = await Home.getuserCartCount(req.body);
+          const wishlistCount = await Home.getwishlistCount(req.body); 
+          const cartCountValue = cartCount && cartCount[0] && cartCount[0].cart_count != null ? cartCount[0].cart_count : 0;
+          const wishlistCountValue = wishlistCount && wishlistCount[0] && wishlistCount[0].wishlist_count != null ? wishlistCount[0].wishlist_count : 0;
+
+          res.status(200).json({status: 200, code: true, message: 'success', user_profile: fData,cart_count:cartCountValue,wishlist_count:wishlistCountValue });
         } catch (error) {
           console.error('Error:', error);
           res.status(500).json({ status: 500, code: false, message: 'failure',error: error.message });
         }
       }];
     
+
+      exports.userWishlistDataByUserId = [
+        check('fk_lang_id').exists().isInt(),
+        check('user_id').exists().isInt(),
+        validate,
+        async (req, res) => {
+          try {
+            const fData = await Users.userWishListDataById(req.body);  
+            const cartCount = await Home.getuserCartCount(req.body);
+            const cartCountValue = cartCount && cartCount[0] && cartCount[0].cart_count != null ? cartCount[0].cart_count : 0;
+  
+            res.status(200).json({status: 200, code: true, message: 'success', wishlist_data: fData,cart_count:cartCountValue});
+          } catch (error) {
+            console.error('Error:', error);
+            res.status(500).json({ status: 500, code: false, message: 'failure',error: error.message });
+          }
+        }];

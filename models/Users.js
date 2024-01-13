@@ -18,7 +18,6 @@ class Users {
         });
     }
 
-
     static async getuserCartData(req) {
         const userId = req.user_id;
         return new Promise((resolve, reject) => {
@@ -115,8 +114,42 @@ class Users {
         });
       }
 
-
-
+      static async userWishListDataById(req) {
+        const userId = req.user_id;
+        return new Promise((resolve, reject) => {
+            const wishlistQuery = `
+                SELECT
+                    wishlist.user_id,
+                    wishlist.id,
+                    pr.product_id,pr.product_name,pr.product_name_ar,pr.max_sell_limit,pr.image_name,pr.product_offer_price,
+                    inventory.qty as quantity,
+                    CASE WHEN wishlist.product_id IS NOT NULL THEN true ELSE false END AS in_wishlist, 
+                    CASE WHEN cart.product_id IS NOT NULL THEN true ELSE false END AS in_cart
+                FROM
+                    wishlist
+                LEFT JOIN
+                    product pr ON pr.product_id = wishlist.product_id
+                LEFT JOIN
+                    inventory ON inventory.product_id = pr.product_id
+                LEFT JOIN
+                    cart ON cart.product_id = pr.product_id AND cart.user_id = ? 
+                WHERE
+                    wishlist.user_id =?
+                    AND wishlist.status = 1
+                    AND pr.status = 1
+                    AND pr.product_status = 1
+                    AND inventory.used_status = 1;`;
+    
+            db.query(wishlistQuery, [userId,userId], (error, results) => {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve(results);
+                }
+            });
+        });
+    }
+    
       
 }
 
