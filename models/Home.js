@@ -135,6 +135,70 @@ class Home {
 
   
 
+  static async navBarData(req) {
+    const userId = req.user_id;
+    return new Promise((resolve, reject) => {
+        const query = `
+            SELECT
+                category.category_id,
+                category.category_name,
+                category.category_name_ar,
+                GROUP_CONCAT(subcategory.sub_category_name) AS sub_category_name,
+                GROUP_CONCAT(subcategory.sub_category_name_ar) AS sub_category_name_ar,
+                GROUP_CONCAT(subcategory.sub_category_id) AS sub_category_id
+            FROM
+                category
+            LEFT JOIN
+                subcategory ON subcategory.category_id = category.category_id
+            WHERE
+                category.status = 1
+                AND category.active_inactive = 1
+                AND category.category_type != 'Gift Card'
+            GROUP BY
+                category.category_id;
+        `;
+        db.query(query, (error, results) => {
+            if (error) {
+                reject(error);
+            } else {
+              
+              results.forEach((row) => {
+                let sub_cat_names = row.sub_category_name;
+                let sub_cat_id = row.sub_category_id;
+                let sub_cat_names_ar = row.sub_category_name_ar;
+
+                let subCatNameArray;
+                let subCatIdArray;
+                let subCatNameArabicArray;
+
+                
+            
+                if (sub_cat_names && sub_cat_names.trim() !== "") {
+                    subCatNameArray = sub_cat_names.split(',');
+                    subCatIdArray = sub_cat_id.split(',');
+                    subCatNameArabicArray = sub_cat_names_ar.split(',');
+
+                } else {
+                    subCatNameArray = [];
+                    subCatIdArray=[];
+                    subCatNameArabicArray=[];
+
+                    
+                }
+            
+                row.sub_category_name = subCatNameArray;
+                row.sub_category_name_ar = subCatNameArabicArray;
+                row.sub_category_id = subCatIdArray;
+            });
+            
+                resolve(results);
+            }
+        });
+    });
+}
+
+
+
   
   
 

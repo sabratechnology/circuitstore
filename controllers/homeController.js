@@ -26,4 +26,19 @@ exports.getHomePageData = [
 ];
 
 
+exports.getNavBarData = [
+  check('fk_lang_id').exists().isInt(),
+  validate,
+  async (req, res) => {
+    try {
+      const fData = await Home.navBarData(req.body);  
+      res.status(200).json({status: 200, code: true, message: 'success',data: fData });
+    } catch (error) {
+      console.error('Error:', error);
+      res.status(500).json({ status: 500, code: false, message: 'failure', error: error.message });
+    }
+  }
+];
+
+
 
