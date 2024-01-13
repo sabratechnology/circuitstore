@@ -13,8 +13,6 @@ const validate = (req, res, next) => {
 // Controller
 exports.getHomePageData = [
   check('fk_lang_id').exists().isInt(),
-  check('page').exists().isInt(),
-  check('pageSize').exists().isInt(),
   validate,
   async (req, res) => {
     try {
