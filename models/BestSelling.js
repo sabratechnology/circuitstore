@@ -59,6 +59,7 @@ class BestSelling {
           pr.image_name, 
           pr.product_offer_price, 
           pr.new_arrival, 
+          pr.product_offer,
           inventory.qty AS quantity, 
           CASE WHEN wishlist.product_id IS NOT NULL THEN true ELSE false END AS in_wishlist, 
           CASE WHEN cart.product_id IS NOT NULL THEN true ELSE false END AS in_cart 
