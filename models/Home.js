@@ -170,8 +170,6 @@ class Home {
                 let subCatNameArray;
                 let subCatIdArray;
                 let subCatNameArabicArray;
-
-                
             
                 if (sub_cat_names && sub_cat_names.trim() !== "") {
                     subCatNameArray = sub_cat_names.split(',');
@@ -182,7 +180,6 @@ class Home {
                     subCatNameArray = [];
                     subCatIdArray=[];
                     subCatNameArabicArray=[];
-
                     
                 }
             

@@ -37,8 +37,10 @@ exports.getNavBarData = [
       const userCartData = await User.userCartDataByUserId(req.body); 
       const userWishListCount = await Home.getwishlistCount(req.body); 
       const userProfileData = await User.userProfileDataById(req.body);
-      const wishlistCount = userWishListCount.wishlist_count ?? 0;
-      const cartData = userCartData.cart_data ? userCartData.cart_data : [];
+
+      const wishlistCount = userWishListCount && userWishListCount[0] && userWishListCount[0].wishlist_count !== null ? userWishListCount[0].wishlist_count : 0;
+      const cartData = userCartData && userCartData[0] && userCartData[0].cart_count !== null ? userCartData[0].cart_count: 0;
+
       const subTotalCartData = userCartData.sub_total ? userCartData.sub_total : 0;
       const userName = userProfileData && userProfileData.length > 0 ? userProfileData[0].user_name : '';
       const cartCount = cartData.length;
