@@ -499,9 +499,6 @@ class Product {
 }
 
 
-
-  
-
   static async totalCategoryProductsCount(req) {
 
     const category_id = req.category_id;
@@ -527,7 +524,6 @@ class Product {
       });
     });
   }
-
 
 
    static async totalSubCategoryProductsCount(req) {
@@ -630,7 +626,94 @@ class Product {
     });
   }
 
+
+
+  static productInfoByBottomId(req) {
+    return new Promise(async (resolve, reject) => {
+        try {
+          const banner = await this.getproductInfoByBottomId(req);
+          const resultResult = banner ? 1 : [];
+          const product_details = banner && banner[0].relatable_products ? await this.getAllRelatedProductsByProductId(banner, req) : [];
+          const response = { banner, product_details };
+            resolve(response);
+        } catch (error) {
+            reject(error);
+        }
+    });
 }
 
-// Exporting the Section class
+  static async getproductInfoByBottomId(req) {
+    const bottomId = req.bottom_id;
+    const userId = req.user_id;
+    return new Promise((resolve, reject) => {
+        const sql = `
+            SELECT
+                bottom_id,
+                relatable_products
+            FROM
+                top_banner
+            WHERE
+                bottom_id = ?
+                AND status = 1
+                AND active_inactive = 1;
+        `;
+
+        db.query(sql, [bottomId], (error, results) => {
+            if (error) {
+                reject(error);
+            } else {
+              resolve(results);
+            }
+
+        });
+    });
+}
+
+
+static async getAllRelatedProductsByProductId(relatedPorductsId,req) {
+  const productId = relatedPorductsId[0].relatable_products;
+  const userId = req.user_id;
+  return new Promise((resolve, reject) => {
+    const query = `
+      SELECT 
+        pr.product_id, 
+        pr.product_name, 
+        pr.product_name_ar, 
+        pr.max_sell_limit, 
+        pr.image_name, 
+        pr.product_offer_price, 
+        pr.new_arrival, 
+        pr.product_offer,
+        inventory.qty AS quantity, 
+        CASE WHEN wishlist.product_id IS NOT NULL THEN true ELSE false END AS in_wishlist, 
+        CASE WHEN cart.product_id IS NOT NULL THEN true ELSE false END AS in_cart 
+      FROM 
+        product pr 
+        LEFT JOIN inventory ON inventory.product_id = pr.product_id 
+        LEFT JOIN wishlist ON wishlist.product_id = pr.product_id AND wishlist.user_id = ? 
+        LEFT JOIN cart ON cart.product_id = pr.product_id AND cart.user_id = ? 
+      WHERE 
+        pr.product_id IN (${productId})
+        AND pr.status = '1' 
+        AND pr.product_status = '1' 
+        AND inventory.used_status = '1' 
+      ORDER BY 
+        pr.product_id DESC;`;
+
+    // Executing the query with parameters
+    db.query(query, [userId,userId,productId], (error, results) => {
+
+      if (error) {
+        reject(error);
+      } else {
+        resolve(results);
+      }
+    });
+  });
+}
+
+  
+
+}
+
 module.exports = Product;
