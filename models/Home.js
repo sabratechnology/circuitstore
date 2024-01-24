@@ -39,7 +39,21 @@ class Home {
   static async getSliders() {
     return new Promise((resolve, reject) => {
       // Perform the database query for brands
-      const query = 'SELECT bottom_id,img_url,relatable_products FROM top_banner WHERE status = 1 AND active_inactive = 1 ORDER BY bottom_id DESC';
+
+      const query = `
+      SELECT
+        bottom_id,
+        img_url,
+        redirection_url,
+        CASE WHEN redirection_url = '' OR redirection_url IS NULL THEN 'false' ELSE 'true' END AS redirection
+      FROM
+        top_banner
+      WHERE
+        status = 1 AND active_inactive = 1
+      ORDER BY
+        bottom_id DESC
+    `;
+
       db.query(query, (error, results) => {
         if (error) {
           reject(error);
