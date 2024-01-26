@@ -153,8 +153,9 @@ class Product {
         const limit = 15;
         
         // Fetching featured products and total count asynchronously
-        const [categoryProductsData, totalCategoryProductsData] = await Promise.all([
+        const [categoryProductsData,subCatData,totalCategoryProductsData] = await Promise.all([
           this.getCategoryProducts(req, page, limit),
+          this.subCatDataByCategId(req),
           this.totalCategoryProductsCount(req),
         ]);
 
@@ -170,6 +171,7 @@ class Product {
         // Constructing the response object
         const response = {
           categoryProductsData,
+          subCatData,
           totalCategoryProductsData,
           currentPage: page,
           totalPages,
@@ -281,6 +283,21 @@ class Product {
           reject(error);
         } else {
           // Resolving with the query results
+          resolve(results);
+        }
+      });
+    });
+  }
+
+
+  static async subCatDataByCategId(req) {
+    var catId = req.category_id;
+    return new Promise((resolve, reject) => {
+      const query = "SELECT sub_category_id,category_id,sub_category_name,sub_category_name_ar FROM `subcategory` WHERE status=1 AND category_id = ?";
+      db.query(query,[catId], (error, results) => {
+        if (error) {
+          reject(error);
+        } else {
           resolve(results);
         }
       });

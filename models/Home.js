@@ -77,6 +77,7 @@ class Home {
     });
   }
 
+
   static async getfeturedProducts(req) {
     const userId = req.user_id;
     return new Promise((resolve, reject) => {
