@@ -482,10 +482,11 @@ class Product {
 
 
   static async searchBarData(req) {
-    const userId = req.user_id;
-
     return new Promise((resolve, reject) => {
-        const countQuery = `
+
+      const search_keyword = req.search_keyword ?? '';
+      console.log(search_keyword)
+      const searchQuery = `
             SELECT
                 product.product_id,
                 product.product_name,
@@ -496,24 +497,30 @@ class Product {
             FROM
                 product
             WHERE
-                product.status = 1
+                (product.product_name LIKE ? OR product.product_name_ar LIKE ?)
+                OR product.search_unique_id LIKE ?
+                AND product.status = 1
                 AND product.product_status = 1
             ORDER BY
                 product.product_id DESC;
         `;
 
-        // Executing the count query
-        db.query(countQuery, (error, results) => {
+        // Pattern: %keyword%
+        const keywordWithWildcards = `%${search_keyword}%`;
+
+        // Executing the search query with parameters
+        db.query(searchQuery, [keywordWithWildcards, keywordWithWildcards,keywordWithWildcards], (error, results) => {
             if (error) {
                 // Rejecting with the encountered error
                 reject(error);
             } else {
-                // Resolving with the total count
+                // Resolving with the search results
                 resolve(results);
             }
         });
     });
 }
+
 
 
   static async totalCategoryProductsCount(req) {
