@@ -45,7 +45,8 @@ class Home {
         bottom_id,
         img_url,
         redirection_url,
-        CASE WHEN redirection_url = '' OR redirection_url IS NULL THEN 'false' ELSE 'true' END AS redirection
+        CASE WHEN redirection_url = '' OR redirection_url IS NULL THEN 'false' ELSE 'true' END AS redirection,
+        CASE WHEN relatable_products = '' OR relatable_products IS NULL THEN 'false' ELSE 'true' END AS relatable_products
       FROM
         top_banner
       WHERE
