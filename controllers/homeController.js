@@ -61,7 +61,7 @@ exports.saveKeywords = [
   async (req, res) => {
     try {
       const fData = await Home.saveSearchBarData(req.body); 
-      res.status(200).json({status: 200, code: true, message: 'data successfully saved'});
+      res.status(200).json({status: 200, code: true, message: 'keywords added successfully saved'});
     } catch (error) {
       console.error('Error:', error);
       res.status(500).json({ status: 500, code: false, message: 'failure', error: error.message });
