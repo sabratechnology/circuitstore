@@ -149,8 +149,6 @@ class Home {
     });
   }
 
-  
-
   static async navBarData(req) {
     const userId = req.user_id;
     return new Promise((resolve, reject) => {
@@ -208,6 +206,29 @@ class Home {
             }
         });
     });
+}
+
+
+
+static async saveSearchBarData(req) {
+
+  const userId = req.user_id;
+  const lang_id = req.fk_lang_id;
+  const keyword = req.keywords;
+  const device_type = req.device_type;
+
+  return new Promise((resolve, reject) => {
+    const insertQuery = "INSERT INTO `search_keywords` (fk_lang_id, user_id,device_type,keyword) VALUES (?, ?, ?, ?)";
+    db.query(insertQuery, [lang_id, userId, device_type, keyword], (error, results) => {
+        if (error) {
+            reject(error);
+        } else {
+            resolve(results);
+        }
+    });
+});
+
+ 
 }
 
 

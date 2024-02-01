@@ -276,8 +276,6 @@ class AllProducts {
           // Rejecting with the encountered error
           reject(error);
         } else {
-          // Resolving with the total count
-          console.log(results[0].total_count)
           resolve(results[0].total_count);
         }
       });
