@@ -151,6 +151,47 @@ class Users {
     }
 
 
+    static async addUserAddressData(req) {
+        const userId = req.user_id;
+        const roomno = req.roomno;
+        const building = req.building;
+        const street = req.street;
+        const zone = req.zone;
+        const latitude = req.latitude;
+        const longitude = req.longitude;
+    
+        return new Promise((resolve, reject) => {
+            const insertQuery = `
+                INSERT INTO user_delivery_address (user_id, roomno, building, street, zone, latitude, longitude, status)
+                VALUES (?, ?, ?, ?, ?, ?, ?, 1);
+            `;
+    
+            db.query(insertQuery, [userId, roomno, building, street, zone, latitude, longitude], (error, results) => {
+                if (error) {
+                    reject(error);
+                } else {
+                    // Check if any rows were affected by the insert
+                    if (results.affectedRows > 0) {
+                        const successMessage = {
+                            message_en: 'Address Added Successfully',
+                            message_ar: 'تم إدراج العنوان بنجاح',
+                            addressId: results.insertId
+                        };
+                        resolve(successMessage);
+                    } else {
+                        const failureMessage = {
+                            message_en: 'Unable To Add Address Details',
+                            message_ar: 'فشل إدراج العنوان'
+                        };
+                        reject(failureMessage);
+                    }
+                }
+            });
+        });
+    }
+    
+
+
     static async updateUserAddressDataById(req) {
         const userId = req.user_id;
         const addressId = req.id;
@@ -189,6 +230,43 @@ class Users {
             });
         });
     }
+
+
+
+    static async deleteUserAddressDataById(req) {
+        const addressId = req.id;
+    
+        return new Promise((resolve, reject) => {
+            const updateQuery = `UPDATE user_delivery_address SET status = 0  WHERE id = ? AND status = 1;`;
+    
+            db.query(updateQuery, [addressId], (error, results) => {
+                if (error) {
+                    reject(error);
+                } else {
+                    // Check if any rows were affected by the update
+                    if (results.affectedRows > 0) {
+                        const successMessage = {
+                            message_en: 'Address Deleted Successfully',
+                            message_ar: 'تم حذف العنوان بنجاح'
+                        };
+                        resolve(successMessage);
+                    } else {
+                        // No rows were updated, indicating the address ID might be incorrect
+                        const failureMessage = {
+                            message_en: 'Unable to delete address details. Invalid Address ID',
+                            message_ar: 'تعذر حذف تفاصيل العنوان. معرف العنوان غير صالح'
+                        };
+                        reject(failureMessage);
+                    }
+                }
+            });
+        });
+    }
+    
+
+
+
+    
     
     static async addWishlistProducts(req) {
         const userId = req.user_id;

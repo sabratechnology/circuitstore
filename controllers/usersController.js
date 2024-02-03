@@ -81,6 +81,32 @@ exports.userCartDataById = [
           }
         }];
 
+        exports.addUsersAddressInfo = [
+
+          check('fk_lang_id').exists().isInt(),
+          check('user_id').exists().isInt(),
+          check('roomno').exists(),
+          check('building').exists(),
+          check('street').exists(),
+          check('zone').exists(),
+          check('latitude').exists(),
+          check('longitude').exists(),
+          validate,
+          async (req, res) => {
+            try {
+              const fData = await Users.addUserAddressData(req.body);  
+              const message_en = fData.message_en;
+              const message_ar = fData.message_ar;
+              res.status(200).json({status: 200, code: true,message_en,message_ar});
+            } catch (error) {
+              const message_en = error.message_en;
+              const message_ar = error.message_ar;
+              res.status(500).json({ status: 500, code: false, message_en,message_ar, error: error.message });
+            }
+          }];
+
+
+
       exports.updateUsersAddressById = [
 
           check('fk_lang_id').exists().isInt(),
@@ -105,6 +131,25 @@ exports.userCartDataById = [
               res.status(500).json({ status: 500, code: false, message_en,message_ar, error: error.message });
             }
           }];
+
+
+      exports.deleteUsersAddressById = [
+
+            check('fk_lang_id').exists().isInt(),
+            check('id').exists().isInt(),
+            validate,
+            async (req, res) => {
+              try {
+                const fData = await Users.deleteUserAddressDataById(req.body);  
+                const message_en = fData.message_en;
+                const message_ar = fData.message_ar;
+                res.status(200).json({status: 200, code: true,message_en,message_ar});
+              } catch (error) {
+                const message_en = error.message_en;
+                const message_ar = error.message_ar;
+                res.status(500).json({ status: 500, code: false, message_en,message_ar, error: error.message });
+              }
+            }];
 
 
 

@@ -9,7 +9,9 @@ router.post('/user_profile_details', usersController.userProfileDataByUserId);
 router.post('/add_wishlist_products', usersController.addProductsInWishlist);
 router.post('/delete_wishlist_products', usersController.deleteWishlistProducts);
 router.post('/user_wishlist_details', usersController.userWishlistDataByUserId);
+router.post('/add_user_address_details', usersController.addUsersAddressInfo);
 router.post('/update_user_address_details', usersController.updateUsersAddressById);
+router.post('/delete_user_address_details', usersController.deleteUsersAddressById);
 router.post('/add_cart_products', usersController.addCartsProducts);
 router.post('/update_cart_details', usersController.updateCartsProducts);
 
