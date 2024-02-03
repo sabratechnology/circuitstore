@@ -122,11 +122,58 @@ exports.userCartDataById = [
 
                 res.status(200).json({status: 200, code: true,message_en,message_ar});
               } catch (error) {
-                const message = fData.message;
-                res.status(500).json({ status: 500, code: false, error:message });
+                const message_en = "something went wrong";
+                res.status(500).json({ status: 500, code: false, error:message,message_en });
               }
-            }];
+      }];
+
+
+      exports.deleteWishlistProducts = [
+
+        check('fk_lang_id').exists().isInt(),
+        check('user_id').exists().isInt(),
+        check('product_id').exists().isInt(),
+        validate,
+        async (req, res) => {
+          try {
+            const fData = await Users.removeProductFromWishlist(req.body);  
+             const message_en = fData.message_en;
+             const message_ar = fData.message_ar;
+
+            res.status(200).json({status: 200, code: true,message_en,message_ar});
+          } catch (error) {
+            const message_en = "Wrong Wishlist Id.";
+            const message_ar = "معرف قائمة الرغبات خاطئ";
+            res.status(500).json({ status: 500, code: false,message_ar,message_en });
+          }
+  }];
 
 
 
+  exports.addCartsProducts = [
 
+    check('fk_lang_id').exists().isInt(),
+    check('user_id').exists().isInt(),
+    check('product_id').exists().isInt(),
+    validate,
+    async (req, res) => {
+      try {
+         const fData = await Users.addCartProducts(req.body);  
+         const cartCount = await Home.getuserCartCount(req.body);
+         const cart_qty = cartCount && cartCount[0] && cartCount[0].cart_count != null ? cartCount[0].cart_count : 0;
+         const message_en = fData.message_en;
+         const message_ar = fData.message_ar;
+         const cart_id = fData.cart_id;
+
+        res.status(200).json({status: 200, code: true,message_en,message_ar,cart_id,cart_qty});
+      } catch (error) {
+
+        const message_en = error.error.message_en;
+        const message_ar = error.error.message_ar;
+        res.status(500).json({ status: 500, code: false,message_en,message_ar });
+      }
+}];
+
+
+
+            

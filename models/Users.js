@@ -273,6 +273,143 @@ class Users {
             });
         });
     }
+
+
+    static async addCartProducts(req) {
+        const userId = req.user_id;
+        const product_id = req.product_id;
+    
+        try {
+            const checkIsExists = `
+                SELECT 
+                    cart.cart_id,
+                    cart.user_id,
+                    cart.product_id,
+                    cart.qty as cartQty,
+                    inventory.qty as inventory_qty 
+                FROM 
+                    cart
+                LEFT JOIN 
+                    inventory ON cart.product_id = inventory.product_id
+                WHERE 
+                    inventory.used_status = 1 
+                    AND cart.product_id = ?
+                    AND cart.status = 1 
+                    AND cart.user_id = ?
+            `;
+    
+            const results = await new Promise((resolve, reject) => {
+                db.query(checkIsExists, [product_id, userId], (error, results) => {
+                    if (error) {
+                        reject(error);
+                    } else {
+                        resolve(results);
+                    }
+                });
+            });
+    
+            if (results && results.length > 0 && results[0].cartQty > 0) {
+                req.cartQty = results[0].cartQty;
+                req.cart_id = results[0].cart_id;
+                req.inventoryQty = results[0].inventory_qty;
+    
+                const updateResult = await this.updateCartQty(req);
+                return { message_en: updateResult.message_en, message_ar: updateResult.message_ar,cart_id: req.cart_id };
+            } else {
+                const addtoCart = await this.addProductInCart(req);
+                return { message_en: addtoCart.message_en, message_ar: addtoCart.message_ar,cart_id:addtoCart.cart_id };
+            }
+        } catch (error) {
+            // Handle errors consistently
+            throw { error};
+        }
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    static async updateCartQty(req) {
+        const userId = req.user_id;
+        const product_id = req.product_id;
+        const cart_id = req.cart_id;
+        const cart_qty = req.cartQty;
+        const inventory_qty = req.inventoryQty;
+    
+        if (inventory_qty > cart_qty) {
+            const updatedCartQty = cart_qty + 1;
+    
+            return new Promise((resolve, reject) => {
+                const cartUpdateQuery = `
+                    UPDATE cart
+                    SET
+                        qty = ?
+                    WHERE
+                        user_id = ? AND product_id = ? AND cart_id = ? AND status = 1
+                `;
+    
+                db.query(cartUpdateQuery, [updatedCartQty, userId, product_id, cart_id], (error, results) => {
+                    if (error) {
+                        reject({ message_en: 'Error updating cart quantity.', message_ar: 'حدث خطأ أثناء تحديث كمية سلة التسوق.' });
+                    } else {
+                        // Check if any rows were affected by the update
+                        if (results.affectedRows > 0) {
+                            resolve({ message_en: 'Product Qty updated to cart successfully.', message_ar: 'تمت إضافة المنتج إلى سلة التسوق بنجاح.' });
+                        } else {
+                            // No rows were updated, indicating the user ID or product ID might be incorrect
+                            reject({ message_en: 'Product not found in the cart or already removed.', message_ar: 'المنتج غير موجود في سلة التسوق أو تمت إزالته بالفعل.' });
+                        }
+                    }
+                });
+            });
+        } else {
+            // Reject with an appropriate message when inventory is not sufficient
+            return Promise.reject({ message_en: 'Product is out of stock.', message_ar: 'المنتج غير متوفر في المخزون.' });
+        }
+    }
+    
+    
+
+
+    static async addProductInCart(req) {
+        const userId = req.user_id;
+        const product_id = req.product_id;
+        const qty = 1;
+    
+        return new Promise((resolve, reject) => {
+            const sqlForAddCart = "INSERT INTO `cart` (user_id, product_id, qty) VALUES (?, ?, ?)";
+            db.query(sqlForAddCart, [userId, product_id, qty], (error, results) => {
+                if (error) {
+                    reject({ message_en: 'Failed to add product to the cart. Please try again later.', message_ar: 'فشل في إضافة المنتج إلى سلة التسوق. يرجى المحاولة مرة أخرى لاحقًا.', error });
+                } else {
+                    if (results.affectedRows > 0) {
+                        const insertedId = results.insertId;
+                        resolve({ 
+                            message_en: 'Product successfully added to the cart.',
+                            message_ar: 'تمت إضافة المنتج بنجاح إلى سلة التسوق.',
+                            cart_id : insertedId
+                        });
+                    } else {
+                        reject({ message_en: 'Failed to add product to the cart. Please try again later.', message_ar: 'فشل في إضافة المنتج إلى سلة التسوق. يرجى المحاولة مرة أخرى لاحقًا.' });
+                    }
+                }
+            });
+        });
+    }
+    
+
+    
+    
+    
+
+
+
+    
     
     
 
