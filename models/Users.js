@@ -433,7 +433,7 @@ class Users {
             if (results && results.length > 0 && results[0].cartQty > 0 && quantity > 0) {
                 const { cartQty, inventory_qty } = results[0];
 
-                if (quantity >= inventory_qty) {
+                if (quantity > inventory_qty) {
                     return Promise.reject({ message_en: 'Product is out of stock.', message_ar: 'المنتج غير متوفر في المخزون.' });
                 } else {
 

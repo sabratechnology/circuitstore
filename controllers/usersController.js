@@ -184,19 +184,19 @@ exports.updateCartsProducts = [
   check('quantity').exists().isInt(),
   validate,
   async (req, res) => {
-
-    const cart_data = await Users.userCartDataByUserId(req.body); 
-    const cart_info =  cart_data;  
-
-
+   
     try {
-       const fData = await Users.updateCartProducts(req.body); 
+       const fData = await Users.updateCartProducts(req.body);
+       const cart_data = await Users.userCartDataByUserId(req.body); 
+       const cart_info =  cart_data;   
        const message_en = fData.message_en;
        const message_ar = fData.message_ar;
 
 
       res.status(200).json({status: 200, code: true,message_en,message_ar,cart_info});
     } catch (error) {
+      const cart_data = await Users.userCartDataByUserId(req.body); 
+      const cart_info =  cart_data;  
       res.status(500).json({ status: 500, code: false, error,cart_info });
     }
 }];
