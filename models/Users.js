@@ -190,8 +190,94 @@ class Users {
         });
     }
     
+    static async addWishlistProducts(req) {
+        const userId = req.user_id;
+        const product_id = req.product_id;
+    
+        return new Promise((resolve, reject) => {
+            // Use a subquery to check if the record already exists
+            const checkIsExist = "SELECT COUNT(id) AS isExist FROM wishlist WHERE user_id = ? AND product_id = ? AND status = 1";
+            db.query(checkIsExist, [userId, product_id], (error, results) => {
+                if (error) {
+                    reject(error);
+                } else {
+                    const isExist = results[0].isExist;
+                    if (isExist > 0) {
+                        // Product already exists, remove it from the wishlist
+                        this.removeProductFromWishlist(req)
+                            .then((removeResult) => {
+                                resolve({ message_en: removeResult.message_en,message_ar: removeResult.message_ar });
+                            })
+                            .catch((removeError) => {
+                                reject({ message_en: removeError.message_en,message_ar: removeError.message_ar });
+                            });
+                    } else {
+                        // Product doesn't exist, add it to the wishlist
+                        this.addProductInwishlist(req)
+                            .then((addResult) => {
+                                resolve({ message_en: addResult.message_en, message_ar: addResult.message_ar });
+                            })
+                            .catch((addError) => {
+                                reject({ message_en: addError.message_en, message_ar: addError.message_ar });
+                            });
+                    }
+                }
+            });
+        });
+    }
+    
+    static async removeProductFromWishlist(req) {
+        const userId = req.user_id;
+        const product_id = req.product_id;
+    
+        return new Promise((resolve, reject) => {
+            const updateQuery = `
+                UPDATE wishlist
+                SET
+                    status = 0
+                WHERE
+                    user_id = ? AND product_id = ? AND status = 1`;
+    
+            db.query(updateQuery, [userId, product_id], (error, results) => {
+                if (error) {
+                    reject({ message_en: 'Error removing product from wishlist.', message_ar: 'حدث خطأ أثناء إزالة المنتج من قائمة الرغبات' });
+                } else {
+                    // Check if any rows were affected by the update
+                    if (results.affectedRows > 0) {
+                        resolve({ message_en: 'Product removed from wishlist successfully.', message_ar: 'تمت إزالة المنتج من قائمة الرغبات بنجاح.' });
+                    } else {
+                        // No rows were updated, indicating the user ID or product ID might be incorrect
+                        reject({ message_en: 'Product not found in the wishlist or already removed.', message_ar: 'المنتج غير موجود في قائمة الرغبات أو تمت إزالته بالفعل.' });
+                    }
+                }
+            });
+        });
+    }
+    
+    static async addProductInwishlist(req) {
+        const userId = req.user_id;
+        const product_id = req.product_id;
+    
+        return new Promise((resolve, reject) => {
+            const sqlForAddWishlist = "INSERT INTO `wishlist` (user_id, product_id) VALUES (?, ?)";
+            db.query(sqlForAddWishlist, [userId, product_id], (error, results) => {
+                if (error) {
+                    reject({ message_en: 'Failed to add product to the wishlist. Please try again later.', message_ar: 'فشل في إضافة المنتج إلى قائمة الرغبات. الرجاء معاودة المحاولة في وقت لاحق.' });
+                } else {
+                    if (results.affectedRows > 0) {
+                        resolve({ message_en: 'Product successfully added to the wishlist.', message_ar: 'تمت إضافة المنتج بنجاح إلى قائمة الرغبات' });
+                    } else {
+                        reject({ message_en: 'Failed to add product to the wishlist. Please try again later.', message_ar: 'فشل في إضافة المنتج إلى قائمة الرغبات. الرجاء معاودة المحاولة في وقت لاحق.' });
+                    }
+                }
+            });
+        });
+    }
+    
     
 
+    
+    
 
 
 

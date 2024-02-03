@@ -64,7 +64,6 @@ exports.userCartDataById = [
         }
       }];
     
-
       exports.userWishlistDataByUserId = [
         check('fk_lang_id').exists().isInt(),
         check('user_id').exists().isInt(),
@@ -82,10 +81,8 @@ exports.userCartDataById = [
           }
         }];
 
+      exports.updateUsersAddressById = [
 
-
-
-        exports.updateUsersAddressById = [
           check('fk_lang_id').exists().isInt(),
           check('user_id').exists().isInt(),
           check('id').exists().isInt(),
@@ -108,3 +105,28 @@ exports.userCartDataById = [
               res.status(500).json({ status: 500, code: false, message_en,message_ar, error: error.message });
             }
           }];
+
+
+
+      exports.addProductsInWishlist = [
+
+            check('fk_lang_id').exists().isInt(),
+            check('user_id').exists().isInt(),
+            check('product_id').exists().isInt(),
+            validate,
+            async (req, res) => {
+              try {
+                const fData = await Users.addWishlistProducts(req.body);  
+                 const message_en = fData.message_en;
+                 const message_ar = fData.message_ar;
+
+                res.status(200).json({status: 200, code: true,message_en,message_ar});
+              } catch (error) {
+                const message = fData.message;
+                res.status(500).json({ status: 500, code: false, error:message });
+              }
+            }];
+
+
+
+
