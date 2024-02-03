@@ -11,6 +11,8 @@ router.post('/delete_wishlist_products', usersController.deleteWishlistProducts)
 router.post('/user_wishlist_details', usersController.userWishlistDataByUserId);
 router.post('/update_user_address_details', usersController.updateUsersAddressById);
 router.post('/add_cart_products', usersController.addCartsProducts);
+router.post('/update_cart_details', usersController.updateCartsProducts);
+
 
 
 

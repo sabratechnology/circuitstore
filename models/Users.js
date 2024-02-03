@@ -325,14 +325,6 @@ class Users {
         }
     }
     
-    
-    
-    
-    
-    
-    
-    
-    
 
     static async updateCartQty(req) {
         const userId = req.user_id;
@@ -402,27 +394,75 @@ class Users {
         });
     }
     
-
+    static async updateCartProducts(req) {
+        const userId = req.user_id;
+        const product_id = req.product_id;
+        const cart_id = req.cart_id;
+        const quantity = req.quantity;
     
+        try {
+            const checkIsExists = `
+                SELECT 
+                    cart.cart_id,
+                    cart.user_id,
+                    cart.product_id,
+                    cart.qty as cartQty,
+                    inventory.qty as inventory_qty 
+                FROM 
+                    cart
+                LEFT JOIN 
+                    inventory ON cart.product_id = inventory.product_id
+                WHERE 
+                    inventory.used_status = 1 
+                    AND cart.product_id = ?
+                    AND cart.status = 1 
+                    AND cart.cart_id = ?
+                    AND cart.user_id = ?
+            `;
     
+            const results = await new Promise((resolve, reject) => {
+                db.query(checkIsExists, [product_id, cart_id, userId], (error, results) => {
+                    if (error) {
+                        reject(error);
+                    } else {
+                        resolve(results);
+                    }
+                });
+            });
+
+            if (results && results.length > 0 && results[0].cartQty > 0 && quantity > 0) {
+                const { cartQty, inventory_qty } = results[0];
+
+                if (quantity >= inventory_qty) {
+                    return Promise.reject({ message_en: 'Product is out of stock.', message_ar: 'المنتج غير متوفر في المخزون.' });
+                } else {
+
+                    const cartUpdateQuery = `UPDATE cart SET qty = ? WHERE user_id = ? AND product_id = ? AND cart_id = ? AND status = 1`;
+                    const updateResults = await new Promise((resolve, reject) => {
+                        db.query(cartUpdateQuery, [quantity, userId, product_id, cart_id], (error, results) => {
+                            if (error) {
+                                reject(error);
+                            } else {
+                                resolve(results);
+                            }
+                        });
+                    });
+                    if (updateResults.affectedRows > 0) {
+                        return { message_en: 'Cart quantity updated successfully.', message_ar: 'تم تحديث كمية السلة بنجاح.', cart_id: cart_id };
+                    } else {
+                        return Promise.reject({ message_en: 'Error updating cart quantity.', message_ar: 'حدث خطأ أثناء تحديث كمية سلة التسوق.' });
+                    }
+                }
+            } else {
+                return Promise.reject({ message_en: 'Cart not found or quantity is not positive.', message_ar: 'السلة غير موجودة أو الكمية غير صحيحة.' });
+            }
+        } catch (error) {
+            console.error('Error updating cart quantity:', error);
+            throw { message_en: 'Error updating cart quantity.', message_ar: 'حدث خطأ أثناء تحديث كمية سلة التسوق.', error };
+        }
+    }
     
 
-
-
-    
-    
-    
-
-    
-    
-
-
-
-
-
-
-    
-      
 }
 
 // Exporting the Section class

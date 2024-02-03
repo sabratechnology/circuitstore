@@ -167,12 +167,39 @@ exports.userCartDataById = [
 
         res.status(200).json({status: 200, code: true,message_en,message_ar,cart_id,cart_qty});
       } catch (error) {
-
         const message_en = error.error.message_en;
         const message_ar = error.error.message_ar;
         res.status(500).json({ status: 500, code: false,message_en,message_ar });
       }
 }];
+
+
+
+exports.updateCartsProducts = [
+
+  check('fk_lang_id').exists().isInt(),
+  check('user_id').exists().isInt(),
+  check('product_id').exists().isInt(),
+  check('cart_id').exists().isInt(),
+  check('quantity').exists().isInt(),
+  validate,
+  async (req, res) => {
+    try {
+       const fData = await Users.updateCartProducts(req.body); 
+       const cart_data = await Users.userCartDataByUserId(req.body); 
+       const cart_info =  cart_data;  
+       const message_en = fData.message_en;
+       const message_ar = fData.message_ar;
+
+
+      res.status(200).json({status: 200, code: true,message_en,message_ar,cart_info});
+    } catch (error) {
+
+      res.status(500).json({ status: 500, code: false, error });
+    }
+}];
+
+
 
 
 
