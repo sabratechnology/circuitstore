@@ -149,6 +149,55 @@ class Users {
             });
         });
     }
+
+
+    static async updateUserAddressDataById(req) {
+        const userId = req.user_id;
+        const addressId = req.id;
+        const roomno = req.roomno;
+        const building = req.building;
+        const street = req.street;
+        const zone = req.zone;
+        const latitude = req.latitude;
+        const longitude = req.longitude;
+    
+        return new Promise((resolve, reject) => {
+            const updateQuery = `
+                UPDATE user_delivery_address
+                SET
+                    roomno = ?,
+                    building = ?,
+                    street = ?,
+                    zone = ?,
+                    latitude = ?,
+                    longitude = ?
+                WHERE
+                    id = ? AND user_id = ? AND status = 1;`;
+    
+            db.query(updateQuery, [roomno, building, street, zone, latitude, longitude, addressId, userId], (error, results) => {
+                if (error) {
+                    reject(error);
+                } else {
+                    // Check if any rows were affected by the update
+                    if (results.affectedRows > 0) {
+                        resolve({ message: 'Address Updated Successfully' });
+                    } else {
+                        // No rows were updated, indicating the address ID or user ID might be incorrect
+                        reject({ message: 'Address Update Failed. Invalid Address ID or User ID' });
+                    }
+                }
+            });
+        });
+    }
+    
+    
+
+
+
+
+
+
+
     
       
 }

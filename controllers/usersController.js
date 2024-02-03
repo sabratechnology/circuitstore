@@ -81,3 +81,30 @@ exports.userCartDataById = [
             res.status(500).json({ status: 500, code: false, message: 'failure',error: error.message });
           }
         }];
+
+
+
+
+        exports.updateUsersAddressById = [
+          check('fk_lang_id').exists().isInt(),
+          check('user_id').exists().isInt(),
+          check('id').exists().isInt(),
+          check('roomno').exists(),
+          check('building').exists(),
+          check('street').exists(),
+          check('zone').exists(),
+          check('latitude').exists(),
+          check('longitude').exists(),
+          validate,
+          async (req, res) => {
+            try {
+              const fData = await Users.updateUserAddressDataById(req.body);  
+              const message_en = fData.message;
+              const message_ar = "تم تحديث العنوان بنجاح ";
+              res.status(200).json({status: 200, code: true,message_en,message_ar});
+            } catch (error) {
+              const message_en = 'Unable to update delivery address';
+              const message_ar = "غير قادر على تحديث عنوان التسليم";
+              res.status(500).json({ status: 500, code: false, message_en,message_ar, error: error.message });
+            }
+          }];
