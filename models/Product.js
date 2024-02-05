@@ -36,7 +36,10 @@ class Product {
               childcategory.child_category_name_ar,
               GROUP_CONCAT(product_gallery.img_url) as img_url,
               CASE WHEN wishlist.product_id IS NOT NULL THEN true ELSE false END AS in_wishlist, 
-              CASE WHEN cart.product_id IS NOT NULL THEN true ELSE false END AS in_cart 
+              CASE WHEN cart.product_id IS NOT NULL THEN true ELSE false END AS in_cart
+              CASE WHEN cart.qty IS NOT NULL THEN true ELSE false END AS in_cart,
+              COALESCE(cart.qty, 0) AS cart_qty
+ 
           FROM
               product
           LEFT JOIN
