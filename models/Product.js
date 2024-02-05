@@ -495,9 +495,15 @@ class Product {
                 product.product_offer_price,
                 product.image_name,
                 product.product_name_ar,
-                product.search_unique_id
+                product.search_unique_id,
+                ct.category_name,
+                ct.category_name_ar,
+                sub.sub_category_name,
+                sub.sub_category_name_ar
             FROM
                 product
+            LEFT JOIN category as ct on product.category_id = ct.category_id
+            LEFT JOIN subcategory as sub on product.sub_category_id = sub.sub_category_id
             WHERE
                 (product.product_name LIKE ? OR product.product_name_ar LIKE ?)
                 OR product.search_unique_id LIKE ?
