@@ -138,7 +138,7 @@ class Home {
   static async getwishlistCount(req) {
     const userId = req.user_id;
     return new Promise((resolve, reject) => {
-      const query = "SELECT count(wishlist.user_id) as wishlist_count FROM `wishlist` WHERE user_id = ?";
+      const query = "SELECT count(wishlist.user_id) as wishlist_count FROM `wishlist` WHERE user_id = ? AND status=1";
       db.query(query,[userId], (error, results) => {
         if (error) {
           reject(error);
