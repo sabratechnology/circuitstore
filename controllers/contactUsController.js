@@ -15,7 +15,6 @@ const validate = (req, res, next) => {
 
 // Controller
 exports.contactUsData = [
-  check('user_id').isInt(),
   check('name').exists(),
   check('email').exists().isEmail(),
   check('message').exists(),
