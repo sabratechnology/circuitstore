@@ -73,6 +73,7 @@ class Latest {
           AND pr.status = '1' 
           AND pr.product_status = '1' 
           AND inventory.used_status = '1' 
+          GROUP BY pr.product_id
         ORDER BY 
           pr.product_id DESC 
         LIMIT ?, ?;`;

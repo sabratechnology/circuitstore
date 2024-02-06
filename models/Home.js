@@ -82,7 +82,7 @@ class Home {
   static async getfeturedProducts(req) {
     const userId = req.user_id;
     return new Promise((resolve, reject) => {
-      const query = "SELECT pr.product_id, pr.product_name, pr.product_name_ar, pr.max_sell_limit, pr.image_name, pr.product_offer_price, pr.new_arrival,pr.product_offer, inventory.qty AS quantity, CASE WHEN wishlist.product_id IS NOT NULL THEN true ELSE false END AS in_wishlist, CASE WHEN cart.product_id IS NOT NULL THEN true ELSE false END AS in_cart FROM product pr LEFT JOIN inventory ON inventory.product_id = pr.product_id LEFT JOIN wishlist ON wishlist.product_id = pr.product_id AND wishlist.user_id = ? LEFT JOIN cart ON cart.product_id = pr.product_id AND cart.user_id = ? WHERE pr.featured = '1' AND pr.status = '1' AND pr.product_status = '1' AND inventory.used_status = '1' ORDER BY pr.product_id DESC LIMIT 15";
+      const query = "SELECT pr.product_id, pr.product_name, pr.product_name_ar, pr.max_sell_limit, pr.image_name, pr.product_offer_price, pr.new_arrival,pr.product_offer, inventory.qty AS quantity, CASE WHEN wishlist.product_id IS NOT NULL THEN true ELSE false END AS in_wishlist, CASE WHEN cart.product_id IS NOT NULL THEN true ELSE false END AS in_cart FROM product pr LEFT JOIN inventory ON inventory.product_id = pr.product_id LEFT JOIN wishlist ON wishlist.product_id = pr.product_id AND wishlist.user_id = ? LEFT JOIN cart ON cart.product_id = pr.product_id AND cart.user_id = ? WHERE pr.featured = '1' AND pr.status = '1' AND pr.product_status = '1' AND inventory.used_status = '1' GROUP BY pr.product_id ORDER BY pr.product_id DESC LIMIT 15";
       db.query(query,[userId,userId], (error, results) => {
         if (error) {
           reject(error);
@@ -96,7 +96,7 @@ class Home {
   static async getpopularProducts(req) {
     const userId = req.user_id;
     return new Promise((resolve, reject) => {
-      const query = "SELECT pr.product_id, pr.product_name, pr.product_name_ar, pr.max_sell_limit, pr.image_name, pr.product_offer_price, pr.new_arrival,pr.product_offer, inventory.qty AS quantity, CASE WHEN wishlist.product_id IS NOT NULL THEN true ELSE false END AS in_wishlist, CASE WHEN cart.product_id IS NOT NULL THEN true ELSE false END AS in_cart FROM product pr LEFT JOIN inventory ON inventory.product_id = pr.product_id LEFT JOIN wishlist ON wishlist.product_id = pr.product_id AND wishlist.user_id = ? LEFT JOIN cart ON cart.product_id = pr.product_id AND cart.user_id = ? WHERE pr.popular = '1' AND pr.status = '1' AND pr.product_status = '1' AND inventory.used_status = '1' ORDER BY pr.product_id DESC LIMIT 15"; 
+      const query = "SELECT pr.product_id, pr.product_name, pr.product_name_ar, pr.max_sell_limit, pr.image_name, pr.product_offer_price, pr.new_arrival,pr.product_offer, inventory.qty AS quantity, CASE WHEN wishlist.product_id IS NOT NULL THEN true ELSE false END AS in_wishlist, CASE WHEN cart.product_id IS NOT NULL THEN true ELSE false END AS in_cart FROM product pr LEFT JOIN inventory ON inventory.product_id = pr.product_id LEFT JOIN wishlist ON wishlist.product_id = pr.product_id AND wishlist.user_id = ? LEFT JOIN cart ON cart.product_id = pr.product_id AND cart.user_id = ? WHERE pr.popular = '1' AND pr.status = '1' AND pr.product_status = '1' AND inventory.used_status = '1' GROUP BY pr.product_id  ORDER BY pr.product_id DESC LIMIT 15"; 
         db.query(query,[userId,userId], (error, results) => {
         if (error) {
           reject(error);
@@ -110,7 +110,7 @@ class Home {
   static async getbestsellingProducts(req) {
     const userId = req.user_id;
     return new Promise((resolve, reject) => {
-      const query = "SELECT pr.product_id, pr.product_name, pr.product_name_ar, pr.max_sell_limit, pr.image_name, pr.product_offer_price, pr.new_arrival,pr.product_offer, inventory.qty AS quantity, CASE WHEN wishlist.product_id IS NOT NULL THEN true ELSE false END AS in_wishlist, CASE WHEN cart.product_id IS NOT NULL THEN true ELSE false END AS in_cart FROM product pr LEFT JOIN inventory ON inventory.product_id = pr.product_id LEFT JOIN wishlist ON wishlist.product_id = pr.product_id AND wishlist.user_id = ? LEFT JOIN cart ON cart.product_id = pr.product_id AND cart.user_id = ? WHERE pr.best_selling = '1' AND pr.status = '1' AND pr.product_status = '1' AND inventory.used_status = '1' ORDER BY pr.product_id DESC LIMIT 15";
+      const query = "SELECT pr.product_id, pr.product_name, pr.product_name_ar, pr.max_sell_limit, pr.image_name, pr.product_offer_price, pr.new_arrival,pr.product_offer, inventory.qty AS quantity, CASE WHEN wishlist.product_id IS NOT NULL THEN true ELSE false END AS in_wishlist, CASE WHEN cart.product_id IS NOT NULL THEN true ELSE false END AS in_cart FROM product pr LEFT JOIN inventory ON inventory.product_id = pr.product_id LEFT JOIN wishlist ON wishlist.product_id = pr.product_id AND wishlist.user_id = ? LEFT JOIN cart ON cart.product_id = pr.product_id AND cart.user_id = ? WHERE pr.best_selling = '1' AND pr.status = '1' AND pr.product_status = '1' AND inventory.used_status = '1' GROUP BY pr.product_id  ORDER BY pr.product_id DESC LIMIT 15";
       db.query(query,[userId,userId], (error, results) => {
         if (error) {
           reject(error);
