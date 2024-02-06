@@ -309,28 +309,25 @@ class Users {
         const product_id = req.product_id;
     
         return new Promise((resolve, reject) => {
-            const updateQuery = `
-                UPDATE wishlist
-                SET
-                    status = 0
+            const deleteQuery = `
+                DELETE FROM wishlist
                 WHERE
                     user_id = ? AND product_id = ? AND status = 1`;
     
-            db.query(updateQuery, [userId, product_id], (error, results) => {
+            db.query(deleteQuery, [userId, product_id], (error, results) => {
                 if (error) {
                     reject({ message_en: 'Error removing product from wishlist.', message_ar: 'حدث خطأ أثناء إزالة المنتج من قائمة الرغبات' });
                 } else {
-                    // Check if any rows were affected by the update
                     if (results.affectedRows > 0) {
                         resolve({ message_en: 'Product removed from wishlist successfully.', message_ar: 'تمت إزالة المنتج من قائمة الرغبات بنجاح.' });
                     } else {
-                        // No rows were updated, indicating the user ID or product ID might be incorrect
                         reject({ message_en: 'Product not found in the wishlist or already removed.', message_ar: 'المنتج غير موجود في قائمة الرغبات أو تمت إزالته بالفعل.' });
                     }
                 }
             });
         });
     }
+    
     
     static async addProductInwishlist(req) {
         const userId = req.user_id;

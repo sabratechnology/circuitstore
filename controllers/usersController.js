@@ -23,10 +23,10 @@ exports.userCartDataById = [
     try {
       const fData = await Users.userCartDataByUserId(req.body);  
       
-      res.status(200).json({status: 200, code: true, message: 'success', data: fData});
+      res.status(200).json({status: true, code: 200, message: 'success', data: fData});
     } catch (error) {
       console.error('Error:', error);
-      res.status(500).json({ status: 500, code: false, message: 'failure',error: error.message });
+      res.status(500).json({ status: false, code: 500, message: 'failure',error: error.message });
     }
   }];
 
@@ -38,10 +38,10 @@ exports.userCartDataById = [
     async (req, res) => {
       try {
         const fData = await Users.userAddressDataById(req.body);  
-        res.status(200).json({status: 200, code: true, message: 'success', data: fData });
+        res.status(200).json({status: true, code: 200, message: 'success', data: fData });
       } catch (error) {
         console.error('Error:', error);
-        res.status(500).json({ status: 500, code: false, message: 'failure',error: error.message });
+        res.status(500).json({ status: false, code: 500, message: 'failure',error: error.message });
       }
     }];
 
@@ -57,10 +57,10 @@ exports.userCartDataById = [
           const cartCountValue = cartCount && cartCount[0] && cartCount[0].cart_count != null ? cartCount[0].cart_count : 0;
           const wishlistCountValue = wishlistCount && wishlistCount[0] && wishlistCount[0].wishlist_count != null ? wishlistCount[0].wishlist_count : 0;
 
-          res.status(200).json({status: 200, code: true, message: 'success', user_profile: fData,cart_count:cartCountValue,wishlist_count:wishlistCountValue });
+          res.status(200).json({status: true, code: 200, message: 'success', user_profile: fData,cart_count:cartCountValue,wishlist_count:wishlistCountValue });
         } catch (error) {
           console.error('Error:', error);
-          res.status(500).json({ status: 500, code: false, message: 'failure',error: error.message });
+          res.status(500).json({ status: false, code: 500, message: 'failure',error: error.message });
         }
       }];
     
@@ -74,10 +74,10 @@ exports.userCartDataById = [
             const cartCount = await Home.getuserCartCount(req.body);
             const cartCountValue = cartCount && cartCount[0] && cartCount[0].cart_count != null ? cartCount[0].cart_count : 0;
   
-            res.status(200).json({status: 200, code: true, message: 'success', wishlist_data: fData,cart_count:cartCountValue});
+            res.status(200).json({status: true, code: 200, message: 'success', wishlist_data: fData,cart_count:cartCountValue});
           } catch (error) {
             console.error('Error:', error);
-            res.status(500).json({ status: 500, code: false, message: 'failure',error: error.message });
+            res.status(500).json({ status: false, code: 500, message: 'failure',error: error.message });
           }
         }];
 
@@ -97,11 +97,11 @@ exports.userCartDataById = [
               const fData = await Users.addUserAddressData(req.body);  
               const message_en = fData.message_en;
               const message_ar = fData.message_ar;
-              res.status(200).json({status: 200, code: true,message_en,message_ar});
+              res.status(200).json({status: true, code: 200,message_en,message_ar});
             } catch (error) {
               const message_en = error.message_en;
               const message_ar = error.message_ar;
-              res.status(500).json({ status: 500, code: false, message_en,message_ar, error: error.message });
+              res.status(500).json({ status: false, code: 500, message_en,message_ar, error: error.message });
             }
           }];
 
@@ -124,11 +124,11 @@ exports.userCartDataById = [
               const fData = await Users.updateUserAddressDataById(req.body);  
               const message_en = fData.message;
               const message_ar = "تم تحديث العنوان بنجاح ";
-              res.status(200).json({status: 200, code: true,message_en,message_ar});
+              res.status(200).json({status: true, code: 200,message_en,message_ar});
             } catch (error) {
               const message_en = 'Unable to update delivery address';
               const message_ar = "غير قادر على تحديث عنوان التسليم";
-              res.status(500).json({ status: 500, code: false, message_en,message_ar, error: error.message });
+              res.status(500).json({ status: false, code: 500, message_en,message_ar, error: error.message });
             }
           }];
 
@@ -143,11 +143,11 @@ exports.userCartDataById = [
                 const fData = await Users.deleteUserAddressDataById(req.body);  
                 const message_en = fData.message_en;
                 const message_ar = fData.message_ar;
-                res.status(200).json({status: 200, code: true,message_en,message_ar});
+                res.status(200).json({status: true, code: 200,message_en,message_ar});
               } catch (error) {
                 const message_en = error.message_en;
                 const message_ar = error.message_ar;
-                res.status(500).json({ status: 500, code: false, message_en,message_ar, error: error.message });
+                res.status(500).json({ status: false, code: 500, message_en,message_ar, error: error.message });
               }
             }];
 
@@ -165,10 +165,10 @@ exports.userCartDataById = [
                  const message_en = fData.message_en;
                  const message_ar = fData.message_ar;
 
-                res.status(200).json({status: 200, code: true,message_en,message_ar});
+                res.status(200).json({status: true, code: 200,message_en,message_ar});
               } catch (error) {
                 const message_en = "something went wrong";
-                res.status(500).json({ status: 500, code: false, error:message,message_en });
+                res.status(500).json({ status: false, code: 500, error:message,message_en });
               }
       }];
 
@@ -185,11 +185,11 @@ exports.userCartDataById = [
              const message_en = fData.message_en;
              const message_ar = fData.message_ar;
 
-            res.status(200).json({status: 200, code: true,message_en,message_ar});
+            res.status(200).json({status: true, code: 200,message_en,message_ar});
           } catch (error) {
             const message_en = "Wrong Wishlist Id.";
             const message_ar = "معرف قائمة الرغبات خاطئ";
-            res.status(500).json({ status: 500, code: false,message_ar,message_en });
+            res.status(500).json({ status: false, code: 500,message_ar,message_en });
           }
   }];
 
@@ -210,11 +210,11 @@ exports.userCartDataById = [
          const message_ar = fData.message_ar;
          const cart_id = fData.cart_id;
 
-        res.status(200).json({status: 200, code: true,message_en,message_ar,cart_id,cart_qty});
+        res.status(200).json({status: true, code: 200,message_en,message_ar,cart_id,cart_qty});
       } catch (error) {
         const message_en = error.error.message_en;
         const message_ar = error.error.message_ar;
-        res.status(500).json({ status: 500, code: false,message_en,message_ar });
+        res.status(500).json({ status: false, code: 500,message_en,message_ar });
       }
 }];
 
@@ -238,11 +238,11 @@ exports.updateCartsProducts = [
        const message_ar = fData.message_ar;
 
 
-      res.status(200).json({status: 200, code: true,message_en,message_ar,cart_info});
+      res.status(200).json({status: true, code: 200,message_en,message_ar,cart_info});
     } catch (error) {
       const cart_data = await Users.userCartDataByUserId(req.body); 
       const cart_info =  cart_data;  
-      res.status(500).json({ status: 500, code: false, error,cart_info });
+      res.status(500).json({ status: false, code: 500, error,cart_info });
     }
 }];
 

@@ -24,12 +24,12 @@ exports.contactUsData = [
       const fData = await Contact.addContactData(req.body);
       const meassge_en = fData.message; 
       const meassge_ar = "تم إرسال الاستفسار بنجاح. سوف نعود اليك قريبا.";  
-      res.status(200).json({status: 200, code: true, message: 'success', meassge_en,meassge_ar});
+      res.status(200).json({status: true, code: 200, message: 'success', meassge_en,meassge_ar});
     } catch (error) {
       const meassge_en = "Failed to send enquiry. Please try again later."; 
       const meassge_ar = "فشل في إرسال الاستفسار. الرجاء معاودة المحاولة في وقت لاحق.";  
       console.error('Error:', error);
-      res.status(500).json({ status: 500, code: false,meassge_en,meassge_ar,error: error.message });
+      res.status(500).json({ status: false, code: 500,meassge_en,meassge_ar,error: error.message });
     }
   }];
 

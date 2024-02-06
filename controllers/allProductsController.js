@@ -21,10 +21,10 @@ exports.AllProductsData = [
     try {
       
       const fData = await AllProducts.AllProductsData(req.body);  
-      res.status(200).json({status: 200, code: true, message: 'success',data: fData });
+      res.status(200).json({status: true, code: 200, message: 'success',data: fData });
     } catch (error) {
       console.error('Error:', error);
-      res.status(500).json({ status: 500, code: false, message: 'failure', error: error.message });
+      res.status(500).json({ status: false, code: 500 , message: 'failure', error: error.message });
     }
   }
 ];
@@ -40,10 +40,10 @@ exports.SearchProductsData = [
     try {
       
       const fData = await AllProducts.SearchProductsData(req.body);  
-      res.status(200).json({status: 200, code: true, message: 'success',data: fData });
+      res.status(200).json({status: true, code: 200, message: 'success',data: fData });
     } catch (error) {
       console.error('Error:', error);
-      res.status(500).json({ status: 500, code: false, message: 'failure', error: error.message });
+      res.status(500).json({status: false, code: 500, message: 'failure', error: error.message });
     }
   }
 ];
