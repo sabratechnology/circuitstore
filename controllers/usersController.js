@@ -197,7 +197,6 @@ exports.userCartDataById = [
 
   exports.deleteCartsProducts = [
 
-    check('fk_lang_id').exists().isInt(),
     check('user_id').exists().isInt(),
     check('cart_id').exists().isInt(),
     validate,
