@@ -327,6 +327,39 @@ class Users {
             });
         });
     }
+
+
+
+
+
+    static async removeCartProducts(req) {
+        const userId = req.user_id;
+        const cartId = req.cart_id;
+    
+        return new Promise((resolve, reject) => {
+            const deleteQuery = `
+                DELETE FROM cart
+                WHERE
+                    user_id = ? AND cart_id = ? AND status = 1`;
+    
+            db.query(deleteQuery, [userId, cartId], (error, results) => {
+                if (error) {
+                    reject({ message_en: 'Error removing product from Cart.', message_ar: 'خطأ أثناء إزالة المنتجات من سلة التسوق' });
+                } else {
+                    if (results.affectedRows > 0) {
+                        resolve({ message_en: 'Successfully Removed From Cart.', message_ar:'تمت إزالة المنتج من قائمة الرغبات بنجاح' });
+                    } else {
+                        reject({ message_en: 'Product not found in the cart or already removed.', message_ar: 'لم يتم العثور على المنتج في سلات التسوق أو تمت إزالته بالفعل' });
+                    }
+                }
+            });
+        });
+    }
+
+
+
+
+    
     
     
     static async addProductInwishlist(req) {

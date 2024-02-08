@@ -195,6 +195,29 @@ exports.userCartDataById = [
 
 
 
+  exports.deleteCartsProducts = [
+
+    check('fk_lang_id').exists().isInt(),
+    check('user_id').exists().isInt(),
+    check('cart_id').exists().isInt(),
+    validate,
+    async (req, res) => {
+      try {
+        const fData = await Users.removeCartProducts(req.body);  
+         const message_en = fData.message_en;
+         const message_ar = fData.message_ar;
+
+        res.status(200).json({status: true, code: 200,message_en,message_ar});
+      } catch (error) {
+        const message_en = "Wrong Cart Id.";
+        const message_ar = "معرف سلة التسوق خاطئ";
+        res.status(500).json({ status: false, code: 500,message_ar,message_en });
+      }
+}];
+
+
+
+
   exports.addCartsProducts = [
 
     check('fk_lang_id').exists().isInt(),
