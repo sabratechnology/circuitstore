@@ -1,5 +1,7 @@
 const { check, validationResult: expressValidationResult } = require('express-validator');
 const Latest = require('../models/Latest');
+const OrderByInfo = require('../models/common/CommonModel');
+
 
 const validate = (req, res, next) => {
   const errors = expressValidationResult(req);
@@ -17,6 +19,10 @@ exports.latestData = [
   validate, 
   async (req, res) => {
     try {
+
+      const orderByLatest = await OrderByInfo.getOrderByASC('latest'); 
+      req.body.order_by_latest = orderByLatest;
+
       const fData = await Latest.latestData(req.body);  
       res.status(200).json({ status: true, code: 200, message: 'success', data: fData });
     } catch (error) {

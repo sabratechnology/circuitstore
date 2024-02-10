@@ -47,11 +47,12 @@ class Featured {
 
   static async getFeaturedProducts(req, page, limit) {
     const userId = req.user_id;
+    const sorting = req.order_by_featured;
     const offset = (page - 1) * limit;
 
     return new Promise((resolve, reject) => {
       const query = `
-        SELECT 
+      SELECT 
           pr.product_id, 
           pr.product_name, 
           pr.product_name_ar, 
@@ -63,20 +64,20 @@ class Featured {
           inventory.qty AS quantity, 
           CASE WHEN wishlist.product_id IS NOT NULL THEN true ELSE false END AS in_wishlist, 
           CASE WHEN cart.product_id IS NOT NULL THEN true ELSE false END AS in_cart 
-        FROM 
+      FROM 
           product pr 
           LEFT JOIN inventory ON inventory.product_id = pr.product_id 
           LEFT JOIN wishlist ON wishlist.product_id = pr.product_id AND wishlist.user_id = ? 
           LEFT JOIN cart ON cart.product_id = pr.product_id AND cart.user_id = ? 
-        WHERE 
+      WHERE 
           pr.featured = '1' 
           AND pr.status = '1' 
           AND pr.product_status = '1' 
           AND inventory.used_status = '1' 
-          GROUP BY pr.product_id
-        ORDER BY 
-          pr.product_id DESC 
-        LIMIT ?, ?;`;
+      GROUP BY pr.product_id
+      ${sorting}
+      LIMIT ?, ?;`;
+  
 
       // Executing the query with parameters
       db.query(query, [userId, userId, offset, limit], (error, results) => {

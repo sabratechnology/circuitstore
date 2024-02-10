@@ -47,6 +47,7 @@ class Latest {
 
   static async getLatestProducts(req, page, limit) {
     const userId = req.user_id;
+    const sorting = req.order_by_latest;
     const offset = (page - 1) * limit;
 
     return new Promise((resolve, reject) => {
@@ -74,8 +75,7 @@ class Latest {
           AND pr.product_status = '1' 
           AND inventory.used_status = '1' 
           GROUP BY pr.product_id
-        ORDER BY 
-          pr.product_id DESC 
+          ${sorting}
         LIMIT ?, ?;`;
 
       // Executing the query with parameters

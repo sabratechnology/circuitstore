@@ -48,6 +48,7 @@ class AllProducts {
   static async getallProducts(req, page, limit) {
     const userId = req.user_id;
     const offset = (page - 1) * limit;
+    const sorting = req.order_by_all;
 
     return new Promise((resolve, reject) => {
       const query = `
@@ -72,8 +73,7 @@ class AllProducts {
           pr.status = '1' 
           AND pr.product_status = '1' 
           AND inventory.used_status = '1' 
-        ORDER BY 
-          pr.product_id DESC 
+          ${sorting}
         LIMIT ?, ?;`;
 
       // Executing the query with parameters

@@ -1,6 +1,8 @@
 const { check, validationResult: expressValidationResult } = require('express-validator');
 const Home = require('../models/Home');
 const User = require('../models/Users');
+const OrderByInfo = require('../models/common/CommonModel');
+
 
 
 // Validation middleware
@@ -18,6 +20,12 @@ exports.getHomePageData = [
   validate,
   async (req, res) => {
     try {
+      const orderByLatest = await OrderByInfo.getOrderByASC('latest'); 
+      const orderByFeatured = await OrderByInfo.getOrderByASC('featured'); 
+      const orderByBest = await OrderByInfo.getOrderByASC('best'); 
+      req.body.order_by_latest = orderByLatest;
+      req.body.order_by_featured = orderByFeatured;
+      req.body.order_by_best = orderByBest;
       const fData = await Home.homePage(req.body);  
       res.status(200).json({status: true, code: 200, message: 'success',data: fData });
     } catch (error) {
@@ -33,6 +41,8 @@ exports.getNavBarData = [
   validate,
   async (req, res) => {
     try {
+
+     
       const fData = await Home.navBarData(req.body); 
       const userCartData = await User.userCartDataByUserId(req.body); 
       const userWishListCount = await Home.getwishlistCount(req.body); 

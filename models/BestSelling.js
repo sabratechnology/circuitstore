@@ -48,6 +48,7 @@ class BestSelling {
   static async getBestSellingProducts(req, page, limit) {
     const userId = req.user_id;
     const offset = (page - 1) * limit;
+    const sorting = req.order_by_best;
 
     return new Promise((resolve, reject) => {
       const query = `
@@ -74,8 +75,7 @@ class BestSelling {
           AND pr.product_status = '1' 
           AND inventory.used_status = '1' 
           GROUP BY pr.product_id
-        ORDER BY 
-          pr.product_id DESC 
+          ${sorting}
         LIMIT ?, ?;`;
 
       // Executing the query with parameters

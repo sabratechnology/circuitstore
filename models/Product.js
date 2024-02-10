@@ -246,6 +246,8 @@ class Product {
   static async getCategoryProducts(req, page, limit) {
     const userId = req.user_id;
     const categoryId = req.category_id;
+    const sorting = req.order_by_cat;
+
     const offset = (page - 1) * limit;
 
     return new Promise((resolve, reject) => {
@@ -272,8 +274,7 @@ class Product {
           AND pr.status = '1' 
           AND pr.product_status = '1' 
           AND inventory.used_status = '1' 
-        ORDER BY 
-          pr.product_id DESC 
+          ${sorting}
         LIMIT ?, ?;`;
 
       // Executing the query with parameters
@@ -294,8 +295,9 @@ class Product {
 
   static async subCatDataByCategId(req) {
     var catId = req.category_id;
+    const sorting = req.order_by_subcat;
     return new Promise((resolve, reject) => {
-      const query = "SELECT sub_category_id,category_id,sub_category_name,sub_category_name_ar FROM `subcategory` WHERE status=1 AND category_id = ?";
+      const query = "SELECT sub_category_id,category_id,sub_category_name,sub_category_name_ar FROM `subcategory` WHERE status=1 AND category_id = ? ${sorting}";
       db.query(query,[catId], (error, results) => {
         if (error) {
           reject(error);
@@ -313,6 +315,8 @@ class Product {
     const userId = req.user_id;
     const categoryId = req.category_id;
     const subCategoryId = req.sub_category_id;
+    const sorting = req.order_by_subcat;
+
     const offset = (page - 1) * limit;
 
     return new Promise((resolve, reject) => {
@@ -340,8 +344,7 @@ class Product {
           AND pr.status = '1' 
           AND pr.product_status = '1' 
           AND inventory.used_status = '1' 
-        ORDER BY 
-          pr.product_id DESC 
+          ${sorting}
         LIMIT ?, ?;`;
 
       // Executing the query with parameters

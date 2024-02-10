@@ -1,5 +1,6 @@
 const { check, validationResult: expressValidationResult } = require('express-validator');
 const AllProducts = require('../models/AllProducts');
+const OrderByInfo = require('../models/common/CommonModel');
 
 
 // Validation middleware
@@ -20,6 +21,8 @@ exports.AllProductsData = [
   async (req, res) => {
     try {
       
+      const OrderBy = await OrderByInfo.getOrderByASC('all_products'); 
+      req.body.order_by_all = OrderBy;
       const fData = await AllProducts.AllProductsData(req.body);  
       res.status(200).json({status: true, code: 200, message: 'success',data: fData });
     } catch (error) {
