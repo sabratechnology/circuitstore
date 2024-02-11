@@ -40,8 +40,12 @@ exports.productDataById = [
     async (req, res) => {
     try {
 
-      const OrderBy = await OrderByInfo.getOrderByASC('category'); 
-      req.body.order_by_cat = OrderBy;
+      const OrderByCat = await OrderByInfo.getOrderByASC('category');
+      const OrderBySubCat = await OrderByInfo.getOrderByASC('sub_cat');
+
+      req.body.order_by_cat = OrderByCat;
+      req.body.order_by_subcat = OrderBySubCat;
+
       const fData = await Product.productDataByCategId(req.body);
       res.status(200).json({status: true, code: 200, message: 'success', data: fData});
     } catch (error) {
