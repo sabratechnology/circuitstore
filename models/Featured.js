@@ -74,6 +74,7 @@ class Featured {
           AND pr.status = '1' 
           AND pr.product_status = '1' 
           AND inventory.used_status = '1' 
+          AND inventory.qty > '1' 
       GROUP BY pr.product_id
       ${sorting}
       LIMIT ?, ?;`;
