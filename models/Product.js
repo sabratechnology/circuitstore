@@ -274,6 +274,8 @@ class Product {
           AND pr.status = '1' 
           AND pr.product_status = '1' 
           AND inventory.used_status = '1' 
+          AND inventory.qty > '0'
+          AND pr.qty > '0' 
           ${sorting}
         LIMIT ?, ?;`;
 
@@ -343,6 +345,8 @@ class Product {
           AND pr.status = '1' 
           AND pr.product_status = '1' 
           AND inventory.used_status = '1' 
+          AND inventory.qty > '0'
+          AND pr.qty > '0' 
           ${sorting}
         LIMIT ?, ?;`;
 
@@ -392,6 +396,8 @@ class Product {
           AND pr.status = '1' 
           AND pr.product_status = '1' 
           AND inventory.used_status = '1' 
+          AND inventory.qty > '0'
+          AND pr.qty > '0' 
         ORDER BY 
           pr.product_id DESC 
         LIMIT ?, ?;`;
@@ -440,6 +446,8 @@ class Product {
           AND pr.status = '1' 
           AND pr.product_status = '1' 
           AND inventory.used_status = '1' 
+          AND inventory.qty > '0'
+          AND pr.qty > '0' 
         ORDER BY 
           pr.product_id DESC 
         LIMIT ?, ?;`;
@@ -468,7 +476,9 @@ class Product {
         WHERE pr.popular = '1'
           AND pr.status = '1'
           AND pr.product_status = '1'
-          AND inventory.used_status = '1';`;
+          AND inventory.used_status = '1'
+          AND inventory.qty > '0'
+          AND pr.qty > '0' ;`;
 
       // Executing the count query
       db.query(countQuery, (error, results) => {
@@ -544,7 +554,9 @@ class Product {
         WHERE pr.category_id = ?
           AND pr.status = '1'
           AND pr.product_status = '1'
-          AND inventory.used_status = '1';`;
+          AND inventory.used_status = '1'
+          AND inventory.qty > '0'
+          AND pr.qty > '0' ;`;
 
       // Executing the count query
       db.query(countQuery, [category_id], (error, results) => {
@@ -573,7 +585,9 @@ class Product {
           AND pr.sub_category_id = ?
           AND pr.status = '1'
           AND pr.product_status = '1'
-          AND inventory.used_status = '1';`;
+          AND inventory.used_status = '1'
+          AND inventory.qty > '0'
+          AND pr.qty > '0' ;`;
 
       // Executing the count query
       db.query(countQuery, [category_id,sub_category_id], (error, results) => {
@@ -600,7 +614,9 @@ class Product {
         WHERE pr.brand_id = ?
           AND pr.status = '1'
           AND pr.product_status = '1'
-          AND inventory.used_status = '1';`;
+          AND inventory.used_status = '1'
+          AND inventory.qty > '0'
+          AND pr.qty > '0' ;`;
 
       // Executing the count query
       db.query(countQuery, [brandId], (error, results) => {
@@ -731,6 +747,8 @@ static async getAllRelatedProductsByProductId(relatedPorductsId,req) {
         AND pr.status = '1' 
         AND pr.product_status = '1' 
         AND inventory.used_status = '1' 
+        AND inventory.qty > '0'
+        AND pr.qty > '0' 
       ORDER BY 
         pr.product_id DESC;`;
 

@@ -107,8 +107,8 @@ class Home {
           AND pr.status = '1' 
           AND pr.product_status = '1' 
           AND inventory.used_status = '1'
-          AND inventory.qty > '1'
-          AND pr.qty > '1' 
+          AND inventory.qty > '0'
+          AND pr.qty > '0' 
       GROUP BY pr.product_id
       ${sorting}
       LIMIT 15;`;
@@ -150,8 +150,8 @@ class Home {
           AND pr.status = '1' 
           AND pr.product_status = '1' 
           AND inventory.used_status = '1'
-          AND inventory.qty > '1'
-          AND pr.qty > '1'  
+          AND inventory.qty > '0'
+          AND pr.qty > '0'  
       GROUP BY pr.product_id
       ${sorting}
       LIMIT 15;`;
@@ -193,8 +193,8 @@ class Home {
           AND pr.status = '1' 
           AND pr.product_status = '1' 
           AND inventory.used_status = '1'
-          AND inventory.qty > '1'
-          AND pr.qty > '1' 
+          AND inventory.qty > '0'
+          AND pr.qty > '0' 
       GROUP BY pr.product_id
       ${sorting}
       LIMIT 15;`;
