@@ -73,7 +73,9 @@ class BestSelling {
           pr.best_selling = '1' 
           AND pr.status = '1' 
           AND pr.product_status = '1' 
-          AND inventory.used_status = '1' 
+          AND inventory.used_status = '1'
+          AND inventory.qty > '0'
+          AND pr.qty > '0' 
           GROUP BY pr.product_id
           ${sorting}
         LIMIT ?, ?;`;
@@ -102,7 +104,9 @@ class BestSelling {
         WHERE pr.best_selling = '1'
           AND pr.status = '1'
           AND pr.product_status = '1'
-          AND inventory.used_status = '1';`;
+          AND inventory.used_status = '1'
+          AND inventory.qty > '0'
+          AND pr.qty > '0';`;
 
       // Executing the count query
       db.query(countQuery, (error, results) => {
