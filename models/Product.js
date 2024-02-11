@@ -297,7 +297,7 @@ class Product {
     var catId = req.category_id;
     const sorting = req.order_by_subcat;
     return new Promise((resolve, reject) => {
-      const query = "SELECT sub_category_id,category_id,sub_category_name,sub_category_name_ar FROM `subcategory` WHERE status=1 AND category_id = ? ${sorting}";
+      const query = `SELECT sub_category_id, category_id, sub_category_name, sub_category_name_ar FROM subcategory WHERE status = 1 AND category_id = ? ${sorting}`;
       db.query(query,[catId], (error, results) => {
         if (error) {
           reject(error);
