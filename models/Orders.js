@@ -161,7 +161,7 @@ class Orders {
             return;
           }
           // Log successful order addition
-          const logMessage = `${formattedDateTime} | Orders Successfully Added | order_id: ${orderId} | user_id: ${userId} | sub_total: ${sub_total} | tax: ${tax} | grand_total: ${grand_total}\n`;
+          const logMessage = `${formattedDateTime} | Orders Successfully Added | order_id: ${orderId} | user_id: ${userId} | fk_address_id : ${fk_address_id} |  product_id: ${fk_product_id[i]} | product_qty: ${quantity[i]} |  unit_prce : ${unit_price[i]} |  sub_total: ${sub_total} | tax: ${tax} | grand_total: ${grand_total}\n`;
           const logFilePath = `${path}/payments_logs_${logsDateTime.split(' ')[0]}.log`;
 
           fs.appendFile(logFilePath, logMessage, (err) => {
