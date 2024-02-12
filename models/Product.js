@@ -34,6 +34,7 @@ class Product {
               subcategory.sub_category_name_ar,
               childcategory.child_category_name,
               childcategory.child_category_name_ar,
+              cart.cart_id,
               GROUP_CONCAT(product_gallery.img_url) as img_url,
               CASE WHEN wishlist.product_id IS NOT NULL THEN true ELSE false END AS in_wishlist, 
               CASE WHEN cart.product_id IS NOT NULL THEN true ELSE false END AS in_cart,
