@@ -63,7 +63,7 @@ exports.orderDetailsByOrderId = [
       
     try {
       const fData = await Orders.addOrderPaymentsInfo(req.body);  
-      res.status(200).json({status: true, code: 200, message: 'success', order_history: fData });
+      res.status(200).json({status: true, code: 200, message: 'success', order_status: fData });
     } catch (error) {
       console.error('Error:', error);
       res.status(500).json({ status: false, code: 500, message: 'failure',error: error.message });
