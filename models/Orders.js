@@ -21,7 +21,7 @@ class Orders {
   static async getConfirmOrderDetails(req) {
     const userId = req.user_id;
     const orderId = req.order_id;
-    this.getConfirmOrderDetails(req);
+    //this.getConfirmOrderDetails(req);
     return new Promise((resolve, reject) => {
       const query = `
         SELECT 
@@ -34,7 +34,6 @@ class Orders {
           ORDER BY id DESC;`;
 
       // Executing the query with parameters
-      console.log(orderId);
       db.query(query, [orderId,userId], (error, results) => {
         if (error) {
           // Rejecting with the encountered error
