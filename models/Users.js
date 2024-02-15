@@ -307,7 +307,7 @@ class Users {
     static async removeProductFromWishlist(req) {
         const userId = req.user_id;
         const product_id = req.product_id;
-    
+
         return new Promise((resolve, reject) => {
             const deleteQuery = `
                 DELETE FROM wishlist

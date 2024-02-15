@@ -25,6 +25,31 @@ class CommonModel {
     });
   }
 
+
+
+
+  static async logToFile(message) {
+    const fs = require('fs').promises;
+    const path = '/var/log/payments_logs';
+    const logsDateTime = require('moment')().format('YYYY-MM-DD HH:mm:ss');
+    const logFilePath = `${path}/payments_logs_${logsDateTime.split(' ')[0]}.log`;
+    const Logsmessage = logsDateTime + message;
+
+    console.log(Logsmessage)
+
+    try {
+      await fs.appendFile(logFilePath, Logsmessage + '\n');
+      console.log('Log successfully written to file:', logFilePath);
+    } catch (error) {
+      console.error('Error writing to the log file:', error);
+    }
+
+
+   
+  }
+
+
+
 }
 
 // Exporting the Section class
