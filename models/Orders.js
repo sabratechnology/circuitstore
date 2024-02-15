@@ -26,7 +26,6 @@ class Orders {
   static async getConfirmOrderDetails(req) {
     const userId = req.user_id;
     const orderId = req.order_id;
-    //this.getConfirmOrderDetails(req);
     return new Promise((resolve, reject) => {
       const query = `
         SELECT 
@@ -36,6 +35,7 @@ class Orders {
         WHERE 
           order_id = ? 
           AND fk_user_id = ?
+          AND is_placed = 0
           ORDER BY id DESC;`;
 
       // Executing the query with parameters
