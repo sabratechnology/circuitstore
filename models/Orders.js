@@ -303,7 +303,7 @@ class Orders {
                 STATUS = ?, 
                 RESPMSG = ?, 
                 TXNAMOUNT = ?, 
-                checksumhash = ? 
+                checksumhash = ?,
                 is_placed = ?
             WHERE 
                 order_id = ? AND fk_user_id = ?;`;
