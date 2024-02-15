@@ -100,6 +100,71 @@ class Users {
         });
       }
 
+
+
+      static async deliveryChargesByAddressId(req) {
+        const userId = req.user_id;
+        const address_id = req.address_id;
+    
+        return new Promise(async (resolve, reject) => {
+            const query = 'SELECT latitude, longitude FROM `user_delivery_address` WHERE user_id = ? AND id = ? AND status = 1;';
+            db.query(query, [userId, address_id], async (error, results) => {
+                if (error) {
+                    reject(error);
+                } else {
+                    let rate;
+            
+                    if (results && results.length > 0) {
+                        rate = await this.calculateDistance(results[0]);
+                    } else {
+                        rate = 50;
+                    }
+                    const cartData = await this.userCartDataByUserId({ user_id: userId });
+                    const without_tax = cartData.sub_total;
+                    const total = without_tax + rate;
+                    const finalData = { without_tax, rate, total };
+                    resolve(finalData);
+                }
+            });
+            
+        });
+    }
+    
+    static calculateDistance(req) {
+        const client_lat = 25.2730664;
+        const client_long = 51.4838876;
+        const user_lat = req.latitude;
+        const user_long = req.longitude;
+        const unit = 'kilometers';
+        const theta = client_long - user_long;
+        const deg2rad = (deg) => deg * (Math.PI / 180);
+        const rad2deg = (rad) => rad * (180 / Math.PI);
+        let distance = Math.sin(deg2rad(client_lat)) * Math.sin(deg2rad(user_lat)) +
+          Math.cos(deg2rad(client_lat)) * Math.cos(deg2rad(user_lat)) * Math.cos(deg2rad(theta));
+        distance = rad2deg(Math.acos(distance));
+        distance = distance * 60 * 1.1515;
+        distance *= 1.609344;
+        const finalDistance = Math.round(distance);
+      
+        return new Promise((resolve, reject) => {
+          if (finalDistance < 50) {
+            const query = "SELECT rate FROM `tbl_delivery_rate` WHERE from_km <= ? AND ? <= to_km;";
+            db.query(query, [finalDistance, finalDistance], (error, results) => {
+              if (error) {
+                reject(error);
+              } else {
+                resolve(results[0].rate);
+              }
+            });
+          } else {
+            resolve(50);
+          }
+        });
+      }
+      
+
+
+
       static async userProfileDataById(req) {
         const userId = req.user_id;
         return new Promise((resolve, reject) => {

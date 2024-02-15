@@ -16,6 +16,8 @@ router.post('/delete_user_address_details', usersController.deleteUsersAddressBy
 router.post('/add_cart_products', usersController.addCartsProducts);
 router.post('/update_cart_details', usersController.updateCartsProducts);
 router.post('/delete_cart_products', usersController.deleteCartsProducts);
+router.post('/delivery_charges_by_address_id', usersController.deliveryCharges);
+
 
 
 
