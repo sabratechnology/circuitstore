@@ -304,7 +304,7 @@ class Orders {
                 RESPMSG = ?, 
                 TXNAMOUNT = ?, 
                 checksumhash = ? 
-                is_place = ?
+                is_placed = ?
             WHERE 
                 order_id = ? AND fk_user_id = ?;`;
 
