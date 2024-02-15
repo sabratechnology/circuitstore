@@ -1,6 +1,8 @@
 const { resolve } = require('path');
 const db = require('../db');
 const UsersModel = require('../models/Users');
+const ProductModel = require('../models/Product');
+
 const OrderByInfo = require('../models/common/CommonModel');
 const { rejects } = require('assert');
 
@@ -216,13 +218,18 @@ class Orders {
 
       try {
         for (let i = 0; i < fk_product_id.length; i++) {
+
+          const productInfo = await ProductModel.getBasicProductInfo(fk_product_id[i]);
+          const purchase_price = productInfo[0].product_purchase_price;
+          const barcode = productInfo[0].product_barcode;
+
           const insertQuery = `INSERT INTO order_data (fk_user_id, fk_lang_id, order_id,order_number,
             coupon_number, offer_code, quantity, product_barcode, purchase_price, unit_price, total, sub_total, tax,
             grand_total, order_date_time, date, payment_method, payment_status, fk_address_id, fk_product_id, order_source,
             status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)`;
   
           const values = [userId, fk_lang_id, orderId,order_number[i], coupon_number, offer_code, quantity[i],
-            'barcode', '100001', unit_price[i], total[i], sub_total, tax, grand_total, order_date_time, date, payment_type,
+            barcode, purchase_price, unit_price[i], total[i], sub_total, tax, grand_total, order_date_time, date, payment_type,
             payment_status, fk_address_id, fk_product_id[i], order_source, status];
             
             const results = await new Promise((resolve, reject) => {

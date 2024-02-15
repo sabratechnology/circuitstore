@@ -106,6 +106,23 @@ class Product {
   }
 
 
+
+  static async getBasicProductInfo(product_id) {
+    return new Promise((resolve, reject) => {
+      const query = "SELECT product_barcode,product_purchase_price FROM `product` WHERE product_id = ?;";
+      db.query(query,[product_id], (error, results) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(results);
+        }
+      });
+    });
+  }
+
+
+
+
   static async getRelativeProductsByProductId(req) {
     const product_id = req.product_id;
     return new Promise((resolve, reject) => {
