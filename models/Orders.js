@@ -216,12 +216,12 @@ class Orders {
 
       try {
         for (let i = 0; i < fk_product_id.length; i++) {
-          const insertQuery = `INSERT INTO order_data (fk_user_id, fk_lang_id, order_id,order_number, has_coupon_code,
+          const insertQuery = `INSERT INTO order_data (fk_user_id, fk_lang_id, order_id,order_number,
             coupon_number, offer_code, quantity, product_barcode, purchase_price, unit_price, total, sub_total, tax,
             grand_total, order_date_time, date, payment_method, payment_status, fk_address_id, fk_product_id, order_source,
-            status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)`;
+            status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)`;
   
-          const values = [userId, fk_lang_id, orderId,order_number[i], has_coupon_code, coupon_number, offer_code, quantity[i],
+          const values = [userId, fk_lang_id, orderId,order_number[i], coupon_number, offer_code, quantity[i],
             'barcode', '100001', unit_price[i], total[i], sub_total, tax, grand_total, order_date_time, date, payment_type,
             payment_status, fk_address_id, fk_product_id[i], order_source, status];
             
@@ -288,7 +288,8 @@ class Orders {
     const RESPMSG = req.RESPMSG;
     const TXNAMOUNT = req.TXNAMOUNT;
     const checksumhash = req.checksumhash;
-    const order_id = req.order_id; // Assuming order_id is part of your req object
+    const order_id = req.order_id; 
+    const is_placed = 1;
 
     return new Promise((resolve, reject) => {
         const updateQuery = `
@@ -303,10 +304,11 @@ class Orders {
                 RESPMSG = ?, 
                 TXNAMOUNT = ?, 
                 checksumhash = ? 
+                is_place = ?
             WHERE 
                 order_id = ? AND fk_user_id = ?;`;
 
-        db.query(updateQuery, [payment_type, transaction_status, transaction_number, MID, RESPCODE, STATUS, RESPMSG, TXNAMOUNT, checksumhash, order_id, user_id], (error, results) => {
+        db.query(updateQuery, [payment_type, transaction_status, transaction_number, MID, RESPCODE, STATUS, RESPMSG, TXNAMOUNT, checksumhash, order_id, user_id, is_placed], (error, results) => {
             if (error) {
                 reject(error);
             } else {
