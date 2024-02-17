@@ -252,8 +252,8 @@ class Orders {
             const newstockParams = { product_id: fk_product_id[i],new_stock : addNewstockInfo};
             const updateNewstockQtyInProducts = await this. updateNewStockInProducts(newstockParams);
             const deleteProductFromCart = await this. deleteProductFromCart(basicParams);
-            payment_type = (payment_type == 1) ? "COD" : "Online";
-            const paymentParams = { user_id : userId,order_id : orderId,payment_type: payment_type,transaction_status : transaction_status,transaction_number :transaction_number,MID : mid,RESPCODE : response_code, STATUS : response_status, RESPMSG : response_msg,TXNAMOUNT:txn_amount,checksumhash:checksumhash};
+            const payment_types = (payment_type == 1) ? "COD" : "Online";
+            const paymentParams = { user_id : userId,order_id : orderId,payment_type: payment_types,transaction_status : transaction_status,transaction_number :transaction_number,MID : mid,RESPCODE : response_code, STATUS : response_status, RESPMSG : response_msg,TXNAMOUNT:txn_amount,checksumhash:checksumhash};
             const updatePaymentInfo = await this.updatePaymentInfo(paymentParams);
             const deliveryParams = {inserted_order_id : insertedOrderId,order_id : orderId[i]}
             const updateOrderStatus = await this.addOrderDeliveryStatusInfo(deliveryParams);
