@@ -30,6 +30,23 @@ exports.orderDetailsByOrderId = [
 
 
 
+
+  exports.placedOrderDetailsByOrderId = [
+    check('fk_lang_id').exists().isInt(),
+    check('order_id').exists().isString(),
+    check('user_id').exists().isInt(),
+    validate,
+    async (req, res) => {
+      try {
+        const fData = await Orders.placedOrderInfoByOrderId(req.body);  
+        res.status(200).json({status: true, code: 200, message: 'success', data: fData });
+      } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ status: false, code: 500, message: 'failure',error: error.message });
+      }
+    }];
+
+
   exports.orderHistoryByUserId = [
     check('fk_lang_id').exists().isInt(),
     check('user_id').exists().isInt(),

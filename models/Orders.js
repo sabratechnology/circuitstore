@@ -25,6 +25,82 @@ class Orders {
     });
   }
 
+
+
+
+
+  static placedOrderInfoByOrderId(req) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const [placed_order_details] = await Promise.all([
+          this.getPlacedOrderDetails(req),
+        ]);
+        // Constructing the response object
+        const response = {placed_order_details,};
+        // Resolving with the final response
+        resolve(response);
+      } catch (error) {
+        // Rejecting with the encountered error
+        reject(error);
+      }
+    });
+  }
+
+
+  static async getPlacedOrderDetails(req) {
+    const userId = req.user_id;
+    const orderId = req.order_id;
+
+    return new Promise((resolve, reject) => {
+        const query = `
+        SELECT 
+            op.user_name,
+            op.email,
+            op.contact_no,
+            tp.order_id,
+            tp.order_no,
+            tp.fk_product_id,
+            tp.fk_user_id,
+            tp.fk_lang_id,
+            tp.fk_address_id,
+            tp.quantity,
+            tp.unit_price,
+            tp.total,
+            tp.sub_total,
+            tp.tax,
+            tp.grand_total,
+            tp.payment_type,
+            tp.date,
+            tp.is_placed,
+            da.building,
+            da.street,
+            da.zone
+        FROM tbl_payment tp
+        LEFT JOIN op_user op ON tp.fk_user_id = op.op_user_id
+        LEFT JOIN user_delivery_address da ON tp.fk_address_id = da.id
+        WHERE 
+            tp.order_id = ?
+            AND tp.fk_user_id = ?
+            AND tp.is_placed = 1
+            AND da.status = 1;
+        `;
+
+        // Executing the query with parameters
+        db.query(query, [orderId, userId], (error, results) => {
+            if (error) {
+                // Rejecting with the encountered error
+                reject(error);
+            } else {
+                // Resolving with the query results
+                resolve(results);
+            }
+        });
+    });
+}
+
+
+
+
   static async getConfirmOrderDetails(req) {
     const userId = req.user_id;
     const orderId = req.order_id;
@@ -52,6 +128,10 @@ class Orders {
       });
     });
   }
+
+
+
+  
 
 
   static async orderHistoriesByUserId(req) {
