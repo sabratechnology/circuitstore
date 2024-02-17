@@ -255,7 +255,7 @@ class Orders {
             const payment_types = (payment_type == 1) ? "COD" : "Online";
             const paymentParams = { user_id : userId,order_id : orderId,payment_type: payment_types,transaction_status : transaction_status,transaction_number :transaction_number,MID : mid,RESPCODE : response_code, STATUS : response_status, RESPMSG : response_msg,TXNAMOUNT:txn_amount,checksumhash:checksumhash};
             const updatePaymentInfo = await this.updatePaymentInfo(paymentParams);
-            const deliveryParams = {inserted_order_id : insertedOrderId,order_id : orderId[i]}
+            const deliveryParams = {inserted_order_id : insertedOrderId,order_id : orderId}
             const updateOrderStatus = await this.addOrderDeliveryStatusInfo(deliveryParams);
             
             const logMessage = ` | Orders Successfully Placed | order_id: ${orderId} | order_source : ${order_source} | payment_type : ${payment_type} | user_id: ${userId} | fk_address_id : ${fk_address_id} |  product_id: ${fk_product_id[i]}  |  unit_price : ${unit_price[i]} | product_qty: ${quantity[i]} |  sub_total: ${sub_total} | tax: ${tax} | grand_total: ${grand_total}\n`;
