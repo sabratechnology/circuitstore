@@ -41,19 +41,21 @@ class Home {
       // Perform the database query for brands
 
       const query = `
-      SELECT
+    SELECT
         bottom_id,
         img_url,
         redirection_url,
+        CASE WHEN in_app IS NULL OR in_app = '0' THEN 'true' ELSE 'false' END as in_app,
         CASE WHEN redirection_url = '' OR redirection_url IS NULL THEN 'false' ELSE 'true' END AS redirection,
         CASE WHEN relatable_products = '' OR relatable_products IS NULL THEN 'false' ELSE 'true' END AS relatable_products
-      FROM
+    FROM
         top_banner
-      WHERE
+    WHERE
         status = 1 AND active_inactive = 1
-      ORDER BY
+    ORDER BY
         bottom_id DESC
-    `;
+`;
+
 
       db.query(query, (error, results) => {
         if (error) {

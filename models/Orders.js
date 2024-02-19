@@ -2,7 +2,6 @@ const { resolve } = require('path');
 const db = require('../db');
 const UsersModel = require('../models/Users');
 const ProductModel = require('../models/Product');
-
 const OrderByInfo = require('../models/common/CommonModel');
 const { rejects } = require('assert');
 
@@ -60,6 +59,7 @@ class Orders {
             tp.order_id,
             tp.order_no,
             tp.fk_product_id,
+            pr.product_name, pr.product_name_ar, pr.image_name,
             tp.fk_user_id,
             tp.fk_lang_id,
             tp.fk_address_id,
@@ -77,7 +77,8 @@ class Orders {
             da.zone
         FROM tbl_payment tp
         LEFT JOIN op_user op ON tp.fk_user_id = op.op_user_id
-        LEFT JOIN user_delivery_address da ON tp.fk_address_id = da.id
+        LEFT JOIN user_delivery_address da ON tp.fk_address_id = da.id,
+        LEFT JOIN product pr ON tp.fk_product_id = pr.product_id
         WHERE 
             tp.order_id = ?
             AND tp.fk_user_id = ?
