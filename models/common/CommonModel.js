@@ -28,7 +28,6 @@ class CommonModel {
         } else {
             orderByClause = 'ORDER BY pr.product_id';
         }
-          console.log(orderByClause)
           resolve(orderByClause);
         }
       });

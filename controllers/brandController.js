@@ -18,7 +18,7 @@ exports.brandDetails = [
   validate,
   async (req, res) => {
     try {
-      const fData = await Brands.getBrandData(req.body.user_id);
+      const fData = await Brands.getBrandData(req.body);
       const cartCount = req.body.user_id ? await cartCounts.getCartCountByUserId(req.body.user_id) : 0;
       res.status(200).json({status: true, code: 200, message: 'success', brand_data: fData,cart_count: cartCount});
     } catch (error) {
