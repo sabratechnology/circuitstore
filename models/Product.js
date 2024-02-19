@@ -1,4 +1,6 @@
 const db = require('../db');
+const cartCounts = require('../models/common/CommonModel');
+
 
 class Product {
   static productDataById(req) {
@@ -173,10 +175,11 @@ class Product {
         const limit = 15;
         
         // Fetching featured products and total count asynchronously
-        const [categoryProductsData,subCatData,totalCategoryProductsData] = await Promise.all([
+        const [categoryProductsData,subCatData,totalCategoryProductsData,cartCount] = await Promise.all([
           this.getCategoryProducts(req, page, limit),
           this.subCatDataByCategId(req),
           this.totalCategoryProductsCount(req),
+          req.user_id ? cartCounts.getCartCountByUserId(req.user_id) : 0,
         ]);
 
         // Calculating total pages
@@ -195,6 +198,8 @@ class Product {
           totalCategoryProductsData,
           currentPage: page,
           totalPages,
+          cart_count : cartCount
+
         };
 
         // Adding a message if there are no records for the requested page
@@ -223,9 +228,11 @@ class Product {
         const limit = 15;
         
         // Fetching featured products and total count asynchronously
-        const [subcategoryProductsData, totalSubCategoryProductsData] = await Promise.all([
+        const [subcategoryProductsData, totalSubCategoryProductsData , cartCount] = await Promise.all([
           this.getSubCategoryProducts(req, page, limit),
           this.totalSubCategoryProductsCount(req),
+          req.user_id ? cartCounts.getCartCountByUserId(req.user_id) : 0,
+
         ]);
 
         // Calculating total pages
@@ -243,6 +250,8 @@ class Product {
           totalSubCategoryProductsData,
           currentPage: page,
           totalPages,
+          cart_count : cartCount
+
         };
 
         // Adding a message if there are no records for the requested page
@@ -515,9 +524,7 @@ class Product {
 
   static async searchBarData(req) {
     return new Promise((resolve, reject) => {
-
       const search_keyword = req.search_keyword ?? '';
-      console.log(search_keyword)
       const searchQuery = `
             SELECT
                 product.product_id,
@@ -657,9 +664,11 @@ class Product {
         const limit = 15;
         
         // Fetching brand products and total count asynchronously
-        const [brandProductsData, totalBrandProductsData] = await Promise.all([
+        const [brandProductsData, totalBrandProductsData, cartCount] = await Promise.all([
           this.getProductsByBrandId(req, page, limit),
           this.totalBrandProductsCount(req),
+          req.user_id ? cartCounts.getCartCountByUserId(req.user_id) : 0,
+          
         ]);
 
 
@@ -678,6 +687,7 @@ class Product {
           totalBrandProductsData,
           currentPage: page,
           totalPages,
+          cart_count:cartCount
         };
 
         // Adding a message if there are no records for the requested page

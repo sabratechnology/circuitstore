@@ -7,8 +7,17 @@ class CommonModel {
     let orderByClause;
     const section_type = section_types;
     return new Promise((resolve, reject) => {
-      const query = `SELECT CASE WHEN fifo = 'true' THEN 'ORDER BY pr.product_id' ELSE 'ORDER BY pr.product_id DESC' END AS order_column FROM interface_setting
-      WHERE sections = ?`;
+      const query = `SELECT
+      CASE
+          WHEN fifo = 'true' THEN 'ORDER BY pr.product_id'
+          WHEN lifo = 'true' THEN 'ORDER BY pr.product_id DESC'
+          WHEN mix = 'true' THEN 'ORDER BY RAND()'
+      END AS order_column
+  FROM
+      interface_setting
+  WHERE
+      sections = ?`;
+  
       db.query(query, [section_type], (error, results) => {
         if (error) {
           reject(error);
@@ -19,7 +28,7 @@ class CommonModel {
         } else {
             orderByClause = 'ORDER BY pr.product_id';
         }
-        //console.log(orderByClause)
+          console.log(orderByClause)
           resolve(orderByClause);
         }
       });
@@ -35,7 +44,6 @@ class CommonModel {
         if (error) {
           reject(error);
         } else {
-
           resolve(results[0].total_cart_count);
         }
       });

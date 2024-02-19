@@ -1,4 +1,6 @@
 const db = require('../db');
+const cartCounts = require('../models/common/CommonModel');
+
 
 class Brands {
   static async getBrandData(req) {
