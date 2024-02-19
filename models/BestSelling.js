@@ -1,4 +1,5 @@
 const db = require('../db');
+const cartCounts = require('../models/common/CommonModel');
 
 class BestSelling {
   static BestSellingData(req) {
@@ -9,9 +10,11 @@ class BestSelling {
         const limit = 15;
 
         // Fetching featured products and total count asynchronously
-        const [bestSellingProducts, totalBestSellingProducts] = await Promise.all([
+        const [bestSellingProducts, totalBestSellingProducts ,cartCount] = await Promise.all([
           this.getBestSellingProducts(req, page, limit),
           this.totalBestSellingProductsCount(req),
+          req.user_id ? cartCounts.getCartCountByUserId(req.user_id) : 0,
+
         ]);
 
         // Calculating total pages
@@ -29,6 +32,8 @@ class BestSelling {
           totalBestSellingProducts,
           currentPage: page,
           totalPages,
+          cart_count : cartCount
+
         };
 
         // Adding a message if there are no records for the requested page

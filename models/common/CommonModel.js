@@ -1,5 +1,6 @@
 const db = require('../../db');
 
+
 class CommonModel {
 
   static async getOrderByASC(section_types) {
@@ -20,6 +21,22 @@ class CommonModel {
         }
         //console.log(orderByClause)
           resolve(orderByClause);
+        }
+      });
+    });
+  }
+
+
+  static async getCartCountByUserId(req) {
+    const userId = req;
+    return new Promise((resolve, reject) => {
+      const query = "SELECT COUNT(cart_id) as total_cart_count FROM `cart` WHERE user_id = ? AND status =1;";
+      db.query(query, [userId], (error, results) => {
+        if (error) {
+          reject(error);
+        } else {
+
+          resolve(results[0].total_cart_count);
         }
       });
     });

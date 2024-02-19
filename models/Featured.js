@@ -1,4 +1,6 @@
 const db = require('../db');
+const cartCounts = require('../models/common/CommonModel');
+
 
 class Featured {
   static featuredData(req) {
@@ -9,9 +11,12 @@ class Featured {
         const limit = 15;
 
         // Fetching featured products and total count asynchronously
-        const [featuredProducts, totalFeaturedProducts] = await Promise.all([
+        const [featuredProducts, totalFeaturedProducts,cartCount] = await Promise.all([
           this.getFeaturedProducts(req, page, limit),
           this.getTotalFeaturedProductsCount(req),
+          req.user_id ? cartCounts.getCartCountByUserId(req.user_id) : 0,
+
+          
         ]);
 
         // Calculating total pages
@@ -21,7 +26,7 @@ class Featured {
         if (page > totalPages || page < 1) {
           resolve({ message: 'Invalid page number or no records available for the requested page.' });
           return;
-        }
+        }        
 
         // Constructing the response object
         const response = {
@@ -29,6 +34,7 @@ class Featured {
           totalFeaturedProducts,
           currentPage: page,
           totalPages,
+          cart_count : cartCount
         };
 
         // Adding a message if there are no records for the requested page
