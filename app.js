@@ -17,9 +17,7 @@ const userPageRoutes = require('./routes/usersRoutes');
 const orderPageRoutes = require('./routes/ordersRoutes');
 const brandPageRoutes = require('./routes/brandRoutes');
 const contactPageRoutes = require('./routes/contactRoutes');
-
-
-
+const offerPageRoutes = require('./routes/offersRoutes');
 
 
 app.use('/api/home', homePageRoutes);
@@ -32,6 +30,8 @@ app.use('/api/users', userPageRoutes);
 app.use('/api/orders', orderPageRoutes);
 app.use('/api/brands', brandPageRoutes);
 app.use('/api/contact', contactPageRoutes);
+app.use('/api/offers', offerPageRoutes);
+
 
 
 
