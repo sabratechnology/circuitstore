@@ -40,7 +40,6 @@ class Offers {
                                     } else {
                                         offer_amounts = offerDetails.offer_amount || 0;
                                         if (offer_amounts !== 0) {
-                                            console.log(cart_amount)
                                             offer_amounts = Math.round(cart_amount * (offer_amounts / 100));
                                         }
                                     }

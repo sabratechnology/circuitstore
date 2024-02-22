@@ -224,14 +224,16 @@ class Users {
         const zone = req.zone;
         const latitude = req.latitude;
         const longitude = req.longitude;
+        const address_type = req.address_type;
+        
     
         return new Promise((resolve, reject) => {
             const insertQuery = `
-                INSERT INTO user_delivery_address (user_id, roomno, building, street, zone, latitude, longitude, status)
+                INSERT INTO user_delivery_address (user_id, roomno, building, street, zone, latitude,address_type,longitude, status)
                 VALUES (?, ?, ?, ?, ?, ?, ?, 1);
             `;
     
-            db.query(insertQuery, [userId, roomno, building, street, zone, latitude, longitude], (error, results) => {
+            db.query(insertQuery, [userId, roomno, building, street, zone, address_type, latitude, longitude], (error, results) => {
                 if (error) {
                     reject(error);
                 } else {
@@ -266,7 +268,8 @@ class Users {
         const zone = req.zone;
         const latitude = req.latitude;
         const longitude = req.longitude;
-    
+        const address_type = req.address_type;
+        
         return new Promise((resolve, reject) => {
             const updateQuery = `
                 UPDATE user_delivery_address
@@ -274,13 +277,14 @@ class Users {
                     roomno = ?,
                     building = ?,
                     street = ?,
+                    address_type = ?,
                     zone = ?,
                     latitude = ?,
                     longitude = ?
                 WHERE
                     id = ? AND user_id = ? AND status = 1;`;
     
-            db.query(updateQuery, [roomno, building, street, zone, latitude, longitude, addressId, userId], (error, results) => {
+            db.query(updateQuery, [roomno, building, street, address_type,zone, latitude, longitude, addressId, userId], (error, results) => {
                 if (error) {
                     reject(error);
                 } else {
