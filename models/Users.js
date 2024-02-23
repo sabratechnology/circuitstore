@@ -222,18 +222,17 @@ class Users {
         const building = req.building;
         const street = req.street;
         const zone = req.zone;
+        const address_type = req.address_type;
         const latitude = req.latitude;
         const longitude = req.longitude;
-        const address_type = req.address_type;
         
     
         return new Promise((resolve, reject) => {
             const insertQuery = `
-                INSERT INTO user_delivery_address (user_id, roomno, building, street, zone, latitude,address_type,longitude, status)
-                VALUES (?, ?, ?, ?, ?, ?, ?, 1);
+                INSERT INTO user_delivery_address (user_id, roomno, building, street, zone, latitude,longitude,address_type, status)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1);
             `;
-    
-            db.query(insertQuery, [userId, roomno, building, street, zone, address_type, latitude, longitude], (error, results) => {
+            db.query(insertQuery, [userId, roomno, building, street, zone, latitude, longitude,address_type], (error, results) => {
                 if (error) {
                     reject(error);
                 } else {
