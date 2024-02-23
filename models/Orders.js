@@ -205,6 +205,11 @@ class Orders {
     const order_source = req.order_source;
     const fk_address_id = req.fk_address_id;
     const randomNumber = Math.floor(10000 + Math.random() * 90000); 
+    const after_discount_total = req.after_discount_total;
+    const has_coupon_code = req.has_coupon_code;
+    const coupon_number = req.coupon_number;
+    const coupon_type = req.coupon_type;
+    const discount_percentage = req.discount_percentage;
     const orderId = "CS" + randomNumber; 
     const currentDate = new Date();
     const formattedDateTime = require('moment')().format('DD/MM/YYYY HH:mm:ss');
@@ -215,11 +220,10 @@ class Orders {
       for (let i = 0; i < fk_product_id.length; i++) {
         try {
           const orderNo = await this.getRandomString();
-  
           const insertQuery = `
             INSERT INTO tbl_payment
-            (order_source, order_id, fk_product_id, fk_user_id,order_no ,fk_address_id, quantity, unit_price, total, sub_total, tax, grand_total, date, is_placed)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            (order_source, order_id, fk_product_id, fk_user_id,order_no ,fk_address_id, quantity, unit_price, total, sub_total,discount_percentage,after_discount_total,has_coupon_code,coupon_number,coupon_type,tax,grand_total,date,is_placed)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ? , ?, ?, ?, ?, ?, ?, ?, ?, ?)
           `;
   
           const values = [
@@ -233,6 +237,11 @@ class Orders {
             unit_price[i],
             total[i],
             sub_total,
+            discount_percentage,
+            after_discount_total,
+            has_coupon_code,
+            coupon_number,
+            coupon_type,
             tax,
             grand_total,
             formattedDateTime,
