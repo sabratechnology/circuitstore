@@ -283,6 +283,11 @@ class Orders {
     const sub_total = req.sub_total;
     const tax = req.tax;
     const grand_total = req.grand_total;
+    const has_coupon_code = req.has_coupon_code;
+    const coupon_number = req.coupon_number;
+    const coupon_type = req.coupon_type;
+    const discount_percentage = req.discount_percentage;
+    const after_discount_total = req.after_discount_total;
     const order_source = req.order_source;
     const fk_address_id = req.fk_address_id;
     const fk_lang_id = 1;
@@ -294,8 +299,6 @@ class Orders {
     const response_msg = req.RESPMSG;
     const txn_amount = req.TXNAMOUNT;
     const checksumhash = req.checksumhash;
-    const has_coupon_code = 0;
-    const coupon_number = 0;
     const offer_code = 0;
     const order_date_time = require('moment')().format('DD/MM/YYYY HH:mm:ss');
     const date = require('moment')().format('DD/MM/YYYY');
@@ -313,13 +316,12 @@ class Orders {
           const purchase_price = productInfo[0].product_purchase_price;
           const barcode = productInfo[0].product_barcode;
 
-          const insertQuery = `INSERT INTO order_data (fk_user_id, fk_lang_id, order_id,order_number,
-            coupon_number, offer_code, quantity, product_barcode, purchase_price, unit_price, total, sub_total, tax,
+          const insertQuery = `INSERT INTO order_data (fk_user_id, fk_lang_id, order_id,order_number,offer_code, quantity, product_barcode, purchase_price, unit_price, total, has_coupon_code, coupon_number, coupon_type, discount_percentage, after_discount_total, sub_total, tax,
             grand_total, order_date_time, date, payment_method, payment_status, fk_address_id, fk_product_id, order_source,
-            status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)`;
+            status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)`;
   
-          const values = [userId, fk_lang_id, orderId,order_number[i], coupon_number, offer_code, quantity[i],
-            barcode, purchase_price, unit_price[i], total[i], sub_total, tax, grand_total, order_date_time, date, payment_type,
+          const values = [userId, fk_lang_id, orderId,order_number[i], offer_code, quantity[i],
+            barcode, purchase_price, unit_price[i], total[i], has_coupon_code, coupon_number, coupon_type, discount_percentage, after_discount_total, sub_total, tax, grand_total, order_date_time, date, payment_type,
             payment_status, fk_address_id, fk_product_id[i], order_source, status];
             
             const results = await new Promise((resolve, reject) => {
