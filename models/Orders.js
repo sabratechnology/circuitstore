@@ -108,7 +108,7 @@ class Orders {
     return new Promise((resolve, reject) => {
       const query = `
         SELECT 
-          order_id,order_no,fk_product_id,fk_user_id,fk_lang_id,fk_address_id,quantity,unit_price,total,sub_total,tax,grand_total,payment_type,date,is_placed
+          order_id,order_no,fk_product_id,fk_user_id,fk_lang_id,fk_address_id,quantity,unit_price,has_coupon_code,coupon_number,coupon_type,discount_percentage,after_discount_total,total,sub_total,tax,grand_total,payment_type,date,is_placed
         FROM 
         tbl_payment 
         WHERE 
