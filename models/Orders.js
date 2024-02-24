@@ -194,10 +194,10 @@ class Orders {
   static async addOrderPaymentsInfo(req) {
     
     const userId = req.user_id;
-    const fk_product_id = JSON.stringify(req.fk_product_id);
-    const quantity = JSON.stringify(req.quantity);
-    const unit_price = JSON.stringify(req.unit_price);
-    const total = JSON.stringify(req.total);
+    const fk_product_id = JSON.parse(req.fk_product_id);
+    const quantity = JSON.parse(req.quantity);
+    const unit_price = JSON.parse(req.unit_price);
+    const total = JSON.parse(req.total);
     const sub_total = req.sub_total;
     const tax = req.tax;
     const grand_total = req.grand_total;
@@ -273,13 +273,13 @@ class Orders {
 
   static async placeOrderRequest(req) {
     const userId = req.user_id;
-    const fk_product_id = JSON.stringify(req.fk_product_id);
+    const fk_product_id = JSON.parse(req.fk_product_id);
     const orderId = req.order_id;
-    const order_number = JSON.stringify(req.order_no);
+    const order_number = JSON.parse(req.order_no);
     const payment_type = req.payment_type;
-    const quantity = JSON.stringify(req.quantity);
-    const unit_price = JSON.stringify(req.unit_price);
-    const total = JSON.stringify(req.total);
+    const quantity = JSON.parse(req.quantity);
+    const unit_price = JSON.parse(req.unit_price);
+    const total = JSON.parse(req.total);
     const sub_total = req.sub_total;
     const tax = req.tax;
     const grand_total = req.grand_total;
