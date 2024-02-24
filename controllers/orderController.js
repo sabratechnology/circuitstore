@@ -65,11 +65,11 @@ exports.orderDetailsByOrderId = [
 
   exports.addOrderPayments = [
     check('user_id').exists().isInt(),
-    check('fk_product_id').exists().isInt(),
-    check('fk_address_id').exists().isInt(),
-    check('quantity').exists().isNumeric(),
-    check('unit_price').exists().isNumeric(),
-    check('total').exists().isNumeric(),
+    check('fk_product_id').exists(),
+    check('fk_address_id').exists(),
+    check('quantity').exists(),
+    check('unit_price').exists(),
+    check('total').exists(),
     check('sub_total').exists().isNumeric(),
     check('tax').exists().isNumeric(),
     check('grand_total').exists().isNumeric(),  
