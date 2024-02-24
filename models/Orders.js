@@ -192,13 +192,12 @@ class Orders {
 
 
   static async addOrderPaymentsInfo(req) {
-
-   
+    
     const userId = req.user_id;
-    const fk_product_id = req.fk_product_id;
-    const quantity = req.quantity;
-    const unit_price = req.unit_price;
-    const total = req.total;
+    const fk_product_id = JSON.stringify(req.fk_product_id);
+    const quantity = JSON.stringify(req.quantity);
+    const unit_price = JSON.stringify(req.unit_price);
+    const total = JSON.stringify(req.total);
     const sub_total = req.sub_total;
     const tax = req.tax;
     const grand_total = req.grand_total;
@@ -214,6 +213,7 @@ class Orders {
     const currentDate = new Date();
     const formattedDateTime = require('moment')().format('DD/MM/YYYY HH:mm:ss');
     const logsDateTime = require('moment')().format('YYYYMMDD HH:mm:ss');
+
 
 
     return new Promise(async (resolve, reject) => {
@@ -273,13 +273,13 @@ class Orders {
 
   static async placeOrderRequest(req) {
     const userId = req.user_id;
-    const fk_product_id = req.fk_product_id;
+    const fk_product_id = JSON.stringify(req.fk_product_id);
     const orderId = req.order_id;
-    const order_number = req.order_no;
+    const order_number = JSON.stringify(req.order_no);
     const payment_type = req.payment_type;
-    const quantity = req.quantity;
-    const unit_price = req.unit_price;
-    const total = req.total;
+    const quantity = JSON.stringify(req.quantity);
+    const unit_price = JSON.stringify(req.unit_price);
+    const total = JSON.stringify(req.total);
     const sub_total = req.sub_total;
     const tax = req.tax;
     const grand_total = req.grand_total;
