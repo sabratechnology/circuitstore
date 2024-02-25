@@ -191,95 +191,95 @@ class Orders {
 
 
 
-  static async addOrderPaymentsInfo(req) {
-    
-    const userId = req.user_id;
-    const fk_product_id = JSON.parse((req.fk_product_id));
-    const quantity = JSON.parse((req.quantity));
-    const unit_price = JSON.parse((req.unit_price));
-    const total = JSON.parse((req.total));
-    const sub_total = req.sub_total;
-    const tax = req.tax;
-    const grand_total = req.grand_total;
-    const order_source = req.order_source;
-    const fk_address_id = req.fk_address_id;
-    const randomNumber = Math.floor(10000 + Math.random() * 90000); 
-    const after_discount_total = req.after_discount_total;
-    const has_coupon_code = req.has_coupon_code;
-    const coupon_number = req.coupon_number;
-    const coupon_type = req.coupon_type;
-    const discount_percentage = req.discount_percentage;
-    const orderId = "CS" + randomNumber; 
-    const currentDate = new Date();
-    const formattedDateTime = require('moment')().format('DD/MM/YYYY HH:mm:ss');
-    const logsDateTime = require('moment')().format('YYYYMMDD HH:mm:ss');
+ static async addOrderPaymentsInfo(req) {
+  const userId = req.user_id;
+  const fk_product_id = Array.isArray(req.fk_product_id) ? req.fk_product_id.map(item => JSON.parse(item)) : [JSON.parse(req.fk_product_id)];
+  const quantity = Array.isArray(req.quantity) ? req.quantity.map(item => JSON.parse(item)) : [JSON.parse(req.quantity)];
+  const unit_price = Array.isArray(req.unit_price) ? req.unit_price.map(item => JSON.parse(item)) : [JSON.parse(req.unit_price)];
+  const total = Array.isArray(req.total) ? req.total.map(item => JSON.parse(item)) : [JSON.parse(req.total)];
+  const sub_total = req.sub_total;
+  const tax = req.tax;
+  const grand_total = req.grand_total;
+  const order_source = req.order_source;
+  const fk_address_id = req.fk_address_id;
+  const randomNumber = Math.floor(10000 + Math.random() * 90000);
+  const after_discount_total = req.after_discount_total;
+  const has_coupon_code = req.has_coupon_code ?? '0';
+  const coupon_number = req.coupon_number;
+  const coupon_type = req.coupon_type;
+  const discount_percentage = req.discount_percentage;
+  const orderId = 'CS' + randomNumber;
+  const currentDate = new Date();
+  const formattedDateTime = require('moment')().format('DD/MM/YYYY HH:mm:ss');
+  const logsDateTime = require('moment')().format('YYYYMMDD HH:mm:ss');
 
 
-
-    return new Promise(async (resolve, reject) => {
+ return new Promise(async (resolve, reject) => {
+    try {
       for (let i = 0; i < fk_product_id.length; i++) {
-        try {
-          const orderNo = await this.getRandomString();
-          const insertQuery = `
-            INSERT INTO tbl_payment
-            (order_source, order_id, fk_product_id, fk_user_id,order_no ,fk_address_id, quantity, unit_price, total, sub_total,discount_percentage,after_discount_total,has_coupon_code,coupon_number,coupon_type,tax,grand_total,date,is_placed)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ? , ?, ?, ?, ?, ?, ?, ?, ?, ?)
-          `;
-  
-          const values = [
-            order_source,
-            orderId,
-            fk_product_id[i],
-            userId,
-            orderNo,
-            fk_address_id,
-            quantity[i],
-            unit_price[i],
-            total[i],
-            sub_total,
-            discount_percentage,
-            after_discount_total,
-            has_coupon_code,
-            coupon_number,
-            coupon_type,
-            tax,
-            grand_total,
-            formattedDateTime,
-            0,
-          ];
-  
-          const results = await db.query(insertQuery, values);
+        const orderNo = await this.getRandomString();
+        const insertQuery = `
+          INSERT INTO tbl_payment
+          (order_source, order_id, fk_product_id, fk_user_id, order_no, fk_address_id, quantity, unit_price, total, sub_total, discount_percentage, after_discount_total, has_coupon_code, coupon_number, coupon_type, tax, grand_total, date, is_placed)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `;
 
-          // Check if any rows were affected by the insertion
-          if (results.affectedRows === 0) {
-            reject({ message: 'Failed to add orders. Please try again later.'});
-            return;
-          }
-          // Log successful order addition
-          const logMessage = `| Order Confirmed | order_id: ${orderId} | order_source :${order_source} |user_id: ${userId} | fk_address_id : ${fk_address_id} |  product_id: ${fk_product_id[i]}  |  unit_price : ${unit_price[i]} | product_qty: ${quantity[i]} | sub_total: ${sub_total} | tax: ${tax} | grand_total: ${grand_total}\n`;
-          await OrderByInfo.logToFile(logMessage);
+        const values = [
+          order_source,
+          orderId,
+          fk_product_id[i],
+          userId,
+          orderNo,
+          fk_address_id,
+          quantity[i],
+          unit_price[i],
+          total[i],
+          sub_total,
+          discount_percentage,
+          after_discount_total,
+          has_coupon_code,
+          coupon_number,
+          coupon_type,
+          tax,
+          grand_total,
+          formattedDateTime,
+          0,
+        ];
 
-        } catch (error) {
-          reject(error);
+        const results = await db.query(insertQuery, values);
+
+        // Log the results for debugging
+        //console.log(results);
+
+        // Check if any rows were affected by the insertion
+        if (results.affectedRows === 0) {
+          reject({ message: 'Failed to add orders. Please try again later.' });
           return;
         }
+
+        // Log successful order addition
+        const logMessage = `| Order Confirmed | order_id: ${orderId} | order_source: ${order_source} | user_id: ${userId} | fk_address_id: ${fk_address_id} |  product_id: ${fk_product_id[i]}  |  unit_price: ${unit_price[i]} | product_qty: ${quantity[i]} | sub_total: ${sub_total} | tax: ${tax} | grand_total: ${grand_total}\n`;
+        await OrderByInfo.logToFile(logMessage);
       }
-  
+
       // Resolve after all insertions are successful
-      resolve({ message: 'Orders Confirmed.',order_id:orderId });
-    });
-  }
+      resolve({ message: 'Orders Confirmed.', order_id: orderId });
+    } catch (error) {
+      reject(error);
+    }
+  });
+}
 
 
   static async placeOrderRequest(req) {
     const userId = req.user_id;
-    const fk_product_id = JSON.parse(JSON.stringify(req.fk_product_id));
+    const fk_product_id = Array.isArray(req.fk_product_id) ? req.fk_product_id.map(item => JSON.parse(item)) : [JSON.parse(req.fk_product_id)];
     const orderId = req.order_id;
-    const order_number = JSON.parse(JSON.stringify(req.order_no));
+    const order_number = Array.isArray(req.order_no) ? req.order_no.map(item => JSON.parse(item)) : [JSON.parse(req.order_no)];
     const payment_type = req.payment_type;
-    const quantity = JSON.parse(JSON.stringify(req.quantity));
-    const unit_price = JSON.parse(JSON.stringify(req.unit_price));
-    const total = JSON.parse(JSON.stringify(req.total));
+    const quantity = Array.isArray(req.quantity) ? req.quantity.map(item => JSON.parse(item)) : [JSON.parse(req.quantity)];
+    const unit_price = Array.isArray(req.unit_price) ? req.unit_price.map(item => JSON.parse(item)) : [JSON.parse(req.unit_price)];
+    const total = Array.isArray(req.total) ? req.total.map(item => JSON.parse(item)) : [JSON.parse(req.total)];
     const sub_total = req.sub_total;
     const tax = req.tax;
     const grand_total = req.grand_total;
