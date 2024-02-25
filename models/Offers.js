@@ -30,10 +30,8 @@ class Offers {
                                     maximum_price: results[0].maximum_price,
                                     offer_amount: results[0].percentage
                                 };
-    
                                 const isOfferUsed = await this.isOfferUsed(req);
                                 if (!isOfferUsed) {
-                                   
                                     let offer_amounts;
                                     if (offerDetails.offer_type == 2 && offerDetails.minimum_price == 0) {
                                         offer_amounts = 0;
@@ -46,7 +44,8 @@ class Offers {
                                     const bindParam = {
                                         user_id: userId,
                                         offer_type: offerDetails.offer_type,
-                                        offer_amount: offer_amounts
+                                        offer_amount: offer_amounts,
+                                        offer_percenatge : results[0].percentage,
                                     };
                                     const offerCalculation = await this.deliveryOfferCalculate(bindParam);
                                     if (offerCalculation) {
