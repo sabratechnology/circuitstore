@@ -155,7 +155,7 @@ class Orders {
             GROUP_CONCAT(DISTINCT tbl_order_status.status) as status,
             GROUP_CONCAT(DISTINCT tbl_order_status_master.order_status) as order_status,
             GROUP_CONCAT(DISTINCT tbl_order_status_master.order_status_ar) as order_status_ar,
-            order_data.order_date_time,
+            order_data.order_date_time
         FROM
             order_data
         LEFT JOIN
