@@ -20,9 +20,10 @@ const validate = (req, res, next) => {
     async (req, res) => {
       try {
         const fData = await Offers.applyCouponCode(req.body);
+        //console.log(fData)
         res.status(200).json({status: true, code: 200, message: 'success',data : fData});
       } catch (error) {
-        res.status(500).json({ status: false, code: 500, message : error});
+        res.status(500).json({ status: false, code: 500, message : error, });
       }
     }];
 
