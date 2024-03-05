@@ -83,7 +83,6 @@ class Orders {
             tp.order_id = ?
             AND tp.fk_user_id = ?
             AND tp.is_placed = 1
-            AND da.status = 1;
         `;
 
         // Executing the query with parameters
