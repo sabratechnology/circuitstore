@@ -80,6 +80,7 @@ static async isOfferUsed(req) {
   const couponCode = req.coupon_code;
 
   return new Promise((resolve, reject) => {
+    
     const query = "SELECT * FROM order_data WHERE fk_user_id = ? AND has_coupon_code = 1 AND coupon_number = ? AND status = 1;";
 
     db.query(query, [userId, couponCode], (error, results) => {
@@ -88,7 +89,7 @@ static async isOfferUsed(req) {
       } else {
         try {
           if (results.length > 0) {
-            resolve(true); // Coupon code already used
+            resolve(false); // Coupon code already used
           } else {
             resolve(false); // Coupon code not used
           }
