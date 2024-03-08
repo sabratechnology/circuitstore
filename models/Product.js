@@ -149,14 +149,13 @@ class Product {
       LEFT JOIN
           inventory ON inventory.product_id = ?
       WHERE
-          product_relative.product_id = ?
-          AND product.status = 1
+          product.status = 1
           AND product.product_status = 1
           AND inventory.used_status = 1;
     `;
     
     
-      db.query(query,[product_id,product_id,product_id], (error, results) => {
+      db.query(query,[product_id,product_id], (error, results) => {
         if (error) {
           reject(error);
         } else {
