@@ -130,7 +130,7 @@ class Product {
     return new Promise((resolve, reject) => {
       const query = `
       SELECT
-          product_relative.rel_product_id,
+          products_relative.rel_product_id,
           product.*,
           category.category_name,
           subcategory.sub_category_name,
@@ -139,7 +139,7 @@ class Product {
       FROM
           product
       LEFT JOIN
-          product_relative ON product_relative.rel_product_id = ?
+          product_relative ON product_relative.product_id = ?
       LEFT JOIN
           category ON product.category_id = category.category_id
       LEFT JOIN
@@ -149,13 +149,14 @@ class Product {
       LEFT JOIN
           inventory ON inventory.product_id = ?
       WHERE
-          product.status = 1
+          product_relative.product_id = ?
+          AND product.status = 1
           AND product.product_status = 1
           AND inventory.used_status = 1;
     `;
     
     
-      db.query(query,[product_id,product_id], (error, results) => {
+      db.query(query,[product_id,product_id,product_id], (error, results) => {
         if (error) {
           reject(error);
         } else {
