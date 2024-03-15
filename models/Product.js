@@ -152,7 +152,8 @@ class Product {
           product_relative.product_id = ?
           AND product.status = 1
           AND product.product_status = 1
-          AND inventory.used_status = 1;
+          AND inventory.used_status = 1
+          GROUP BY 2;
     `;
     
     
