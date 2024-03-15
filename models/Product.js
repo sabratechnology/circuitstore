@@ -139,7 +139,7 @@ class Product {
       FROM
           product
       LEFT JOIN
-          product_relative ON product_relative.product_id = product.product_id
+          product_relative ON product_relative.rel_product_id = product.product_id
       LEFT JOIN
           category ON product.category_id = category.category_id
       LEFT JOIN
