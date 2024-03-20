@@ -107,7 +107,10 @@ class Users {
         const address_id = req.address_id;
     
         return new Promise(async (resolve, reject) => {
-            const query = 'SELECT latitude, longitude FROM `user_delivery_address` WHERE user_id = ? AND id = ? AND status = 1;';
+            const query = `SELECT uda.id, op.vip_member, uda.latitude, uda.longitude 
+               FROM user_delivery_address uda
+               LEFT JOIN op_user op ON uda.user_id = op.op_user_id
+               WHERE uda.user_id = ? AND uda.id = ? AND uda.status = 1`;
             db.query(query, [userId, address_id], async (error, results) => {
                 if (error) {
                     reject(error);
@@ -119,10 +122,18 @@ class Users {
                     } else {
                         rate = 50;
                     }
+
                     const cartData = await this.userCartDataByUserId({ user_id: userId });
                     const without_tax = cartData.sub_total;
                     const total = without_tax + rate;
-                    const finalData = { without_tax, rate, total };
+                    const isVIP = results[0].vip_member;
+                    let reduceAmount = 0;
+                    if(isVIP == 1){
+                         reduceAmount = rate ;
+                    }else{
+                         reduceAmount = 0;
+                    }
+                    const finalData = {isVIP, without_tax, rate, total,reduceAmount};
                     resolve(finalData);
                 }
             });
