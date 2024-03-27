@@ -101,7 +101,6 @@ class Users {
       }
 
 
-
       static async deliveryChargesByAddressId(req) {
         const userId = req.user_id;
         const address_id = req.address_id;
@@ -120,9 +119,10 @@ class Users {
                     if (results && results.length > 0) {
                         rate = await this.calculateDistance(results[0]);
                     } else {
-                        rate = 50;
+                        // Records not found, return with message
+                        return resolve({ message: 'Records not found' });
                     }
-
+    
                     const cartData = await this.userCartDataByUserId({ user_id: userId });
                     const without_tax = cartData.sub_total;
                     const total = without_tax + rate;
@@ -140,6 +140,7 @@ class Users {
             
         });
     }
+    
     
     static calculateDistance(req) {
         const client_lat = 25.2730664;
