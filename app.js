@@ -20,17 +20,17 @@ const contactPageRoutes = require('./routes/contactRoutes');
 const offerPageRoutes = require('./routes/offersRoutes');
 
 
-app.use('/api/home', homePageRoutes);
-app.use('/api/featured', featuredPageRoutes);
-app.use('/api/latest', latestPageRoutes);
-app.use('/api/best', bestSellingPageRoutes);
-app.use('/api/all_products', allProductPageRoutes);
-app.use('/api/products', productPageRoutes);
-app.use('/api/users', userPageRoutes);
-app.use('/api/orders', orderPageRoutes);
-app.use('/api/brands', brandPageRoutes);
-app.use('/api/contact', contactPageRoutes);
-app.use('/api/offers', offerPageRoutes);
+app.use('/v2/home', homePageRoutes);
+app.use('/v2/featured', featuredPageRoutes);
+app.use('/v2/latest', latestPageRoutes);
+app.use('/v2/best', bestSellingPageRoutes);
+app.use('/v2/all_products', allProductPageRoutes);
+app.use('/v2/products', productPageRoutes);
+app.use('/v2/users', userPageRoutes);
+app.use('/v2/orders', orderPageRoutes);
+app.use('/v2/brands', brandPageRoutes);
+app.use('/v2/contact', contactPageRoutes);
+app.use('/v2/offers', offerPageRoutes);
 
 
 
@@ -42,7 +42,7 @@ app.use('/api/offers', offerPageRoutes);
 
 
 
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
